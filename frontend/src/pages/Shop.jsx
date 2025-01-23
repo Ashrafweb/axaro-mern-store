@@ -180,7 +180,7 @@ const Shop = () => {
 
           <div className='p-3'>
             <h2 className='h4 text-center mb-2'>{products?.length} Products</h2>
-            <div className='flex flex-wrap justify-center items-center'>
+            <div className='flex flex-wrap justify-center items-center  '>
               {products.length === 0 ? (
                 <Loader />
               ) : (

@@ -5,10 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "backend": "nodemon backend/index.js",
     "test": "npm run dev --prefix backend",
     "dev": "nodemon index.js",
-    "build": "node index.js"
+    "build": "node index.js",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "Ashraf Uddin",

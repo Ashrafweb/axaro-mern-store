@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  width: 100%;
+}
+
+input,
+textarea {
+  color: #000;
+}
+.dark {
+  background-color: #121212;
+  color: #fff;
+  overflow: hidden;
+}
+
+.light {
+  background-color: #fff;
+  color: #333;
+  overflow: hidden;
+}

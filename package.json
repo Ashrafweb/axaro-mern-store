@@ -1,0 +1,13 @@
+{
+  "name": "axaro",
+  "version": "1.0.0",
+  "description": "mern stack ecommerce store",
+  "main": "index.js",
+  "scripts": {
+    "backend": "nodemon backend/index.js",
+    "frontend": "npm run dev --prefix frontend",
+    "dev": "concurrently \"npm run frontend\" \"npm run backend"
+  },
+  "author": "ashraf uddin",
+  "license": "ISC"
+}

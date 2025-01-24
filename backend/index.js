@@ -12,6 +12,7 @@ import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import cors from "cors"
+import { fetchProducts } from "./controllers/productController.js";
 dotenv.config();
 const port = process.env.PORT || 3000;
 
@@ -25,6 +26,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.get("/", (req, res) => {
   res.send("server running")
+})
+app.get("/products", (req, res) => {
+  const data = fetchProducts()
+  res.send(data)
 })
 app.use("/api/users", userRoutes);
 app.use("/api/category", categoryRoutes);

@@ -5,7 +5,7 @@
       "use": "@vercel/node"
     },
     {
-      "src": "build/**",
+      "src": "dist/**",
       "use": "@vercel/static"
     }
   ],
@@ -35,6 +35,5 @@
       "src": "/api/orders(.*)",
       "dest": "/api/orders$1"
     }
-  ],
-  "rewrites": [{ "source": "/(.*)", "destination": "index.js" }]
+  ]
 }

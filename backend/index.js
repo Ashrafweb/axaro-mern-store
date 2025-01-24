@@ -19,7 +19,7 @@ connectDB();
 
 const app = express();
 
-app.use(cors({ methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], origin: "https://axaro-mern-store.vercel.app", credentials: true }))
+app.use(cors({ methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], origin: "*", credentials: true }))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -38,5 +38,4 @@ app.get("/api/config/paypal", (req, res) => {
 
 const __dirname = path.resolve();
 app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
-app.use(express.static(path.resolve(__dirname, 'build')));
 app.listen(port, () => console.log(`Server running on port: ${port}`));

@@ -13,13 +13,13 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 dotenv.config();
 const port = process.env.PORT || 3000;
-
+const allowedOrigins = ["https://axaro-mern-store.vercel.app"];
 connectDB();
 
 const app = express();
 app.use(
   cors({
-    origin: '*',
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true
   })
@@ -27,6 +27,8 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+app.options("*", cors());
 
 app.use("/api/users", userRoutes);
 app.use("/api/category", categoryRoutes);

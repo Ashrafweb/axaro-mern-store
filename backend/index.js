@@ -17,7 +17,13 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 const app = express();
-
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    credentials: true
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -33,12 +39,6 @@ app.get("/api/config/paypal", (req, res) => {
 });
 
 const __dirname = path.resolve();
-app.use(
-  cors({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true
-  })
-);
+
 app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
 app.listen(port, () => console.log(`Server running on port: ${port}`));

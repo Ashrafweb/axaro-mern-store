@@ -17,23 +17,24 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 const app = express();
-app.use(
-  cors({
-    origin: "*",
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included
-    credentials: true,
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-CSRF-Token",
-      "X-Requested-With",
-      "Accept",
-    ],
-  })
-);
+app.use(cors())
+// app.use(
+//   cors({
+//     origin: "*",
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included
+//     credentials: true,
+//     allowedHeaders: [
+//       "Content-Type",
+//       "Authorization",
+//       "X-CSRF-Token",
+//       "X-Requested-With",
+//       "Accept",
+//     ],
+//   })
+// );
 
 // Ensure preflight requests are processed
-app.options("*", cors());
+// app.options("*", cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -42,7 +43,7 @@ app.use(cookieParser());
 
 app.use("/api/users", userRoutes);
 app.use("/api/category", categoryRoutes);
-app.use("/api/products", productRoutes);
+app.use("/api/products", cors(), productRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/orders", orderRoutes);
 

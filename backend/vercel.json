@@ -39,7 +39,7 @@
       "src": "/api/:path*",
       "dest": "/api/:path*",
       "headers": {
-        "Access-Control-Allow-Origin": "https://axaro-mern-store.vercel.app",
+        "Access-Control-Allow-Origin": "https://axaro-mern-store-gf45pl23r-ashrafwebs-projects.vercel.app",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization"
       }

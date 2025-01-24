@@ -3,7 +3,7 @@ import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-
+import cors from "cors"
 // Utiles
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -11,7 +11,6 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
-
 dotenv.config();
 const port = process.env.PORT || 3000;
 
@@ -34,7 +33,13 @@ app.get("/api/config/paypal", (req, res) => {
 });
 
 const __dirname = path.resolve();
+app.use(
+  cors({
+    exposedHeaders: ['X-Total-Count'],
+    origin: "*"
+  })
+);
 app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
-app.use("/", express.static(path.join(__dirname + "/dist")));
+app.use(express.static(path.resolve(__dirname, 'dist')));
 
 app.listen(port, () => console.log(`Server running on port: ${port}`));

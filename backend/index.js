@@ -11,7 +11,7 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
-
+import cors from "cors"
 dotenv.config();
 const port = process.env.PORT || 3000;
 
@@ -19,6 +19,7 @@ connectDB();
 
 const app = express();
 
+app.use(cors({ methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], origin: "*", credentials: true }))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

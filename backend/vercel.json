@@ -17,29 +17,45 @@
     },
     {
       "src": "/api/users(.*)",
-      "dest": "/api/users$1"
+      "dest": "/api/users$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://axaro-mern-store.vercel.app",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
     },
     {
       "src": "/api/category(.*)",
-      "dest": "/api/category$1"
+      "dest": "/api/category$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://axaro-mern-store.vercel.app",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
     },
     {
       "src": "/api/products(.*)",
-      "dest": "/api/products$1"
+      "dest": "/api/products$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://axaro-mern-store.vercel.app",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
     },
     {
       "src": "/api/upload(.*)",
-      "dest": "/api/upload$1"
+      "dest": "/api/upload$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "https://axaro-mern-store.vercel.app",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
     },
     {
       "src": "/api/orders(.*)",
-      "dest": "/api/orders$1"
-    },
-    {
-      "src": "/api/:path*",
-      "dest": "/api/:path*",
+      "dest": "/api/orders$1",
       "headers": {
-        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Origin": "https://axaro-mern-store.vercel.app",
         "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization"
       }

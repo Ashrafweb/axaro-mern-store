@@ -1,4 +1,4 @@
-export const BASE_URL = import.meta.env.VITE_NODE_ENV == "development" ? "http://localhost:5000" : "https://axaro-backend.vercel.app";
+export const BASE_URL = import.meta.env.VITE_NODE_ENV == "development" ? "http://localhost:5000" : "https://axaro-mern-backend.vercel.app";
 export const USERS_URL = "/api/users";
 export const CATEGORY_URL = "/api/category";
 export const PRODUCT_URL = "/api/products";

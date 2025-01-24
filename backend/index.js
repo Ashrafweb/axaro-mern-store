@@ -36,10 +36,8 @@ const __dirname = path.resolve();
 app.use(
   cors({
     exposedHeaders: ['X-Total-Count'],
-    origin: "*"
+    origin: "*", credentials: true
   })
 );
 app.use("/uploads", express.static(path.join(__dirname + "/uploads")));
-app.use(express.static(path.resolve(__dirname, 'dist')));
-
 app.listen(port, () => console.log(`Server running on port: ${port}`));

@@ -17,25 +17,25 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 const app = express();
-app.use(cors({ allowedHeaders: ['Content-Type', 'Authorization'], origin: "*", credentials: true }))
+// app.use(cors({ allowedHeaders: ['Content-Type', 'Authorization'], origin: "*", credentials: true }))
 
-// app.use(
-//   cors({
-//     origin: "*",
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included
-//     credentials: true,
-//     allowedHeaders: [
-//       "Content-Type",
-//       "Authorization",
-//       "X-CSRF-Token",
-//       "X-Requested-With",
-//       "Accept",
-//     ],
-//   })
-// );
+app.use(
+  cors({
+    origin: "*",
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included
+    credentials: true,
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-CSRF-Token",
+      "X-Requested-With",
+      "Accept",
+    ],
+  })
+);
 
 // Ensure preflight requests are processed
-// app.options("*", cors());
+app.options("*", cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

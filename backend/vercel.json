@@ -25,7 +25,12 @@
     },
     {
       "src": "/api/products(.*)",
-      "dest": "/api/products$1"
+      "dest": "/api/products$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "*"
+      }
     },
     {
       "src": "/api/upload(.*)",

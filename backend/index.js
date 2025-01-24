@@ -17,7 +17,8 @@ const port = process.env.PORT || 3000;
 connectDB();
 
 const app = express();
-app.use(cors())
+app.use(cors({ allowedHeaders: ['Content-Type', 'Authorization'], origin: "*", credentials: true }))
+
 // app.use(
 //   cors({
 //     origin: "*",

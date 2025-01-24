@@ -19,7 +19,7 @@ connectDB();
 
 const app = express();
 
-app.use(cors({ methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], origin: "*", credentials: true }))
+app.use(cors({ methods: ["GET", "POST", "PUT", "PATCH", "DELETE"], origin: "https://axaro-mern-store.vercel.app", credentials: true }))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

@@ -20,7 +20,7 @@ import checkId from "../middlewares/checkId.js";
 import rateLimitMiddleware from "../middlewares/rateLimiter.js"
 router
   .route("/")
-  .get(rateLimitMiddleware, fetchProducts)
+  .get(fetchProducts)
   .post(authenticate, authorizeAdmin, formidable(), addProduct);
 
 router.route("/allproducts").get(rateLimitMiddleware, fetchAllProducts);

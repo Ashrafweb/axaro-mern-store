@@ -89,14 +89,14 @@ const Overview = () => {
     }
   }, [salesDetail]);
 
+  const cardClass =
+    "rounded-lg bg-transparent border-2 border-gray-600 p-5 w-full md:w-[10rem] lg:w-[15rem] mt-5";
   return (
     <>
-      {/* <AdminMenu /> */}
-
       <section className='xl:ml-[2rem] md:ml-[0rem]'>
-        <div className='w-[80%] flex justify-around flex-wrap'>
-          <div className='rounded-lg bg-black p-5 w-[15rem] mt-5'>
-            <div className='font-bold rounded-full w-[3rem] bg-pink-500 text-center p-3'>
+        <div className='w-[80%] flex flex-col md:flex-row justify-around flex-wrap '>
+          <div className={cardClass}>
+            <div className='font-bold rounded-full w-[3rem] bg-orange-700 text-center p-3'>
               $
             </div>
 
@@ -105,8 +105,8 @@ const Overview = () => {
               $ {isLoading ? <Loader /> : sales.totalSales.toFixed(2)}
             </h1>
           </div>
-          <div className='rounded-lg bg-black p-5 w-[15rem] mt-5'>
-            <div className='font-bold rounded-full w-[3rem] bg-pink-500 text-center p-3'>
+          <div className={cardClass}>
+            <div className='font-bold rounded-full w-[3rem] bg-orange-700 text-center p-3'>
               $
             </div>
 
@@ -115,8 +115,8 @@ const Overview = () => {
               $ {isLoading ? <Loader /> : customers?.length}
             </h1>
           </div>
-          <div className='rounded-lg bg-black p-5 w-[15rem] mt-5'>
-            <div className='font-bold rounded-full w-[3rem] bg-pink-500 text-center p-3'>
+          <div className={cardClass}>
+            <div className='font-bold rounded-full w-[3rem] bg-orange-700 text-center p-3'>
               $
             </div>
 

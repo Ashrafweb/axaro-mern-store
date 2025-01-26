@@ -6,7 +6,7 @@ import {
 } from "../../redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
-import AdminMenu from "./AdminMenu";
+//import AdminMenu from "./AdminMenu";
 
 const ProductList = () => {
   const [image, setImage] = useState("");
@@ -28,8 +28,9 @@ const ProductList = () => {
     e.preventDefault();
 
     try {
+      const cloudImageUrl = await uploadFileHandler();
       const productData = new FormData();
-      productData.append("image", image);
+      productData.append("image", cloudImageUrl);
       productData.append("name", name);
       productData.append("description", description);
       productData.append("price", price);
@@ -52,119 +53,171 @@ const ProductList = () => {
     }
   };
 
-  const uploadFileHandler = async (e) => {
-    const formData = new FormData();
-    formData.append("image", e.target.files[0]);
+  // const uploadFileHandler = async (e) => {
+  //   const formData = new FormData();
+  //   formData.append("image", e.target.files[0]);
 
-    try {
-      const res = await uploadProductImage(formData).unwrap();
-      toast.success(res.message);
-      setImage(res.image);
-      setImageUrl(res.image);
-    } catch (error) {
-      toast.error(error?.data?.message || error.error);
+  //   try {
+  //     const res = await uploadProductImage(formData).unwrap();
+  //     toast.success(res.message);
+  //     setImageUrl(res.imageUrl);
+  //   } catch (error) {
+  //     toast.error(error?.data?.message || error.error);
+  //   }
+  // };
+
+  const imagePreviewHandler = (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("image", file);
+    // Get the first selected file
+    if (file) {
+      const reader = new FileReader(); // Create a FileReader
+      reader.onload = (e) => {
+        setImage(e.target.result);
+        setImageUrl(e.target.result);
+        // Set the image data (base64 string)
+      };
+      reader.readAsDataURL(file); // Read the file as a data URL
     }
   };
 
+  const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("image", file);
+    try {
+      const res = await uploadProductImage(formData).unwrap();
+      toast.success("Item added successfully", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000,
+      });
+      return res.imageUrl;
+    } catch (err) {
+      toast.success("Item added successfully", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 2000,
+      });
+    }
+  };
+  const inputClass =
+    "mt-2 p-2 py-2 bg-transparent rounded-sm w-full border-[2px] border-gray-500";
   return (
-    <div className="container xl:mx-[9rem] sm:mx-[0]">
-      <div className="flex flex-col md:flex-row">
-        <AdminMenu />
-        <div className="md:w-3/4 p-3">
-          <div className="h-12">Create Product</div>
+    <div className='w-full'>
+      <div className='flex flex-col md:flex-row w-fit mx-auto'>
+        {/* <AdminMenu /> */}
+        <div className=''>
+          <div className=' mb-4 font-bold font-sans text-lg md:text-xl border-b-4 border-orange-400'>
+            Create Product
+          </div>
 
           {imageUrl && (
-            <div className="text-center">
+            <div className='text-center'>
               <img
                 src={imageUrl}
-                alt="product"
-                className="block mx-auto max-h-[200px]"
+                alt='product'
+                className='block mx-auto max-h-[200px]'
               />
             </div>
           )}
 
-          <div className="mb-3">
-            <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
+          <div className='mb-3'>
+            <label className='border-dotted border-2 border-gray-400  block w-full text-center rounded-lg cursor-pointer font-bold py-6'>
               {image ? image.name : "Upload Image"}
 
               <input
-                type="file"
-                name="image"
-                accept="image/*"
-                onChange={uploadFileHandler}
-                className={!image ? "hidden" : "text-white"}
+                type='file'
+                name='image'
+                accept='image/*'
+                onChange={imagePreviewHandler}
+                className={
+                  !image ? "hidden" : "text-white border-[3px] border-gray-400"
+                }
               />
             </label>
           </div>
 
-          <div className="p-3">
-            <div className="flex flex-wrap">
-              <div className="one">
-                <label htmlFor="name">Name</label> <br />
+          <div className='py-3'>
+            <div className='flex flex-wrap sm:flex-nowrap'>
+              <div className='one'>
+                <label htmlFor='name' className='font-semibold'>
+                  Name
+                </label>{" "}
+                <br />
                 <input
-                  type="text"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  type='text'
+                  className={inputClass}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                 />
               </div>
-              <div className="two ml-10 ">
-                <label htmlFor="name block">Price</label> <br />
+              <div className='two ml-10 '>
+                <label htmlFor='name block'>Price</label> <br />
                 <input
-                  type="number"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  type='number'
+                  className={inputClass}
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
                 />
               </div>
             </div>
-            <div className="flex flex-wrap">
-              <div className="one">
-                <label htmlFor="name block">Quantity</label> <br />
+            <div className='flex flex-wrap'>
+              <div className='one'>
+                <label htmlFor='name block'>Quantity</label> <br />
                 <input
-                  type="number"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  type='number'
+                  className={inputClass}
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                 />
               </div>
-              <div className="two ml-10 ">
-                <label htmlFor="name block">Brand</label> <br />
+              <div className='two ml-10 '>
+                <label htmlFor='name block'>Brand</label> <br />
                 <input
-                  type="text"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  type='text'
+                  className={inputClass}
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
                 />
               </div>
             </div>
 
-            <label htmlFor="" className="my-5">
-              Description
-            </label>
-            <textarea
-              type="text"
-              className="p-2 mb-3 bg-[#101011] border rounded-lg w-[95%] text-white"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            ></textarea>
+            <div className='w-full'>
+              <label htmlFor='' className='my-5'>
+                Description
+              </label>
+              <textarea
+                type='text'
+                rows={4}
+                className=' bg-transparent rounded-md w-full border-[3px] border-gray-400'
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              ></textarea>
+            </div>
 
-            <div className="flex justify-between">
-              <div>
-                <label htmlFor="name block">Count In Stock</label> <br />
+            <div className='flex justify-between '>
+              <div className='w-[45%] mt-4 sm:mt-6'>
+                <label htmlFor='name block' className='text-md sm:text-lg'>
+                  Count In Stock
+                </label>{" "}
+                <br />
                 <input
-                  type="text"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  type='text'
+                  className={inputClass}
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
                 />
               </div>
 
-              <div>
-                <label htmlFor="">Category</label> <br />
+              <div className=' w-[45%] mt-4 sm:mt-6'>
+                <label htmlFor='category' className='text-md sm:text-lg'>
+                  Category
+                </label>{" "}
+                <br />
                 <select
-                  placeholder="Choose Category"
-                  className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
+                  placeholder='Choose Category'
+                  id='category'
+                  className={inputClass}
                   onChange={(e) => setCategory(e.target.value)}
                 >
                   {categories?.map((c) => (
@@ -178,9 +231,9 @@ const ProductList = () => {
 
             <button
               onClick={handleSubmit}
-              className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-pink-600"
+              className='py-2 md:py-4 w-full mt-5 rounded-lg text-lg font-bold bg-orange-600'
             >
-              Submit
+              ADD PRODUCT
             </button>
           </div>
         </div>

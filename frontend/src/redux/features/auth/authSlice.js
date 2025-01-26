@@ -4,12 +4,16 @@ const initialState = {
   userInfo: localStorage.getItem("userInfo")
     ? JSON.parse(localStorage.getItem("userInfo"))
     : null,
+  activeTab: "account"
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    setActiveTab: (state, action) => {
+      state.activeTab = action.payload
+    },
     setCredentials: (state, action) => {
       state.userInfo = action.payload;
       localStorage.setItem("userInfo", JSON.stringify(action.payload));
@@ -24,6 +28,6 @@ const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, logout, setActiveTab } = authSlice.actions;
 
 export default authSlice.reducer;

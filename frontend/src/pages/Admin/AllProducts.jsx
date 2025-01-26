@@ -49,7 +49,7 @@ const AllProducts = () => {
                   <div className='flex justify-start gap-6'>
                     <Link
                       to={`/admin/product/update/${product._id}`}
-                      className='inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-pink-700 rounded-lg hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800'
+                      className='inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-orange-700 rounded-lg hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800'
                     >
                       Update Product
                       <svg
@@ -68,7 +68,7 @@ const AllProducts = () => {
                         />
                       </svg>
                     </Link>
-                    <div className='bg-blue-900 w-max mb-2 rounded-md p-1 h-full'>
+                    <div className='bg-blue-900 text-white w-max mb-2 rounded-md p-1 h-full'>
                       <p className='font-serif font-semibold'>
                         $ {product?.price}
                       </p>

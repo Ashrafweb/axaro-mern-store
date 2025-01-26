@@ -13,38 +13,28 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 dotenv.config();
 const port = process.env.PORT || 3000;
-
+const env = process.env.NODE_ENV || 'development'
 connectDB();
 
 const app = express();
-// app.use(cors({ allowedHeaders: ['Content-Type', 'Authorization'], origin: "*", credentials: true }))
-
 app.use(
   cors({
-    origin: "*",
+    origin: env === "development" ? "http://localhost:5173" : "https://axaro-mern-store.vercel.app",
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included
-    credentials: true,
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-CSRF-Token",
-      "X-Requested-With",
-      "Accept",
-    ],
+    credentials: true
   })
 );
 
 // Ensure preflight requests are processed
 app.options("*", cors());
 
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-
 app.use("/api/users", userRoutes);
 app.use("/api/category", categoryRoutes);
-app.use("/api/products", cors(), productRoutes);
+app.use("/api/products", productRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/orders", orderRoutes);
 

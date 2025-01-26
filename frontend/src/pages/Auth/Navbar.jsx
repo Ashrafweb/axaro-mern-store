@@ -22,7 +22,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      window.scrollY > 0 ? setIsSticky(true) : setIsSticky(false);
+      window.scrollY > 150 ? setIsSticky(true) : setIsSticky(false);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -151,7 +151,10 @@ const Navbar = () => {
                   >
                     <ul className='list-none text-left'>
                       <li className='text-black text-md hover:bg-gray-200 w-full py-2 border-b-[1px] border-gray-400'>
-                        <Link to='/profile' className='px-4 font-semibold'>
+                        <Link
+                          to='/admin/dashboard'
+                          className='px-4 font-semibold'
+                        >
                           Profile
                         </Link>
                       </li>
@@ -197,7 +200,10 @@ const Navbar = () => {
               </Link>
             </div>
             <ThemeToggle />
-            <button className='' onClick={() => setOpenMenu(!isOpenMenu)}>
+            <button
+              className='sm:hidden'
+              onClick={() => setOpenMenu(!isOpenMenu)}
+            >
               {isOpenMenu ? (
                 <IoClose className='h-8 w-full font-bold ' />
               ) : (
@@ -227,22 +233,6 @@ const Navbar = () => {
                   Shop
                 </Link>
               </li>
-              <li>
-                <Link
-                  to='../categories'
-                  className='block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-orange-500 md:p-0 md:dark:hover:text-orange-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700'
-                >
-                  Categories
-                </Link>
-              </li>
-              {/* <li>
-                <Link
-                  to='../contact'
-                  className='block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-orange-500 md:p-0 md:dark:hover:text-orange-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700'
-                >
-                  Contact
-                </Link>
-              </li> */}
             </ul>
           </div>
         </div>

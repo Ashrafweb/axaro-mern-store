@@ -1,11 +1,12 @@
-import { useState } from "react";
 import Dashboard from "../../components/Dashboard";
 import Account from "./AccountDetails";
 import Order from "../Orders/Order";
 import Favorites from "../Products/Favorites";
+import { useSelector } from "react-redux";
 
 function UserProfile() {
-  const [activeTab, setActiveTab] = useState("account");
+  const activeTab = useSelector((state) => state.auth.activeTab);
+  console.log(activeTab);
   const ChildComponent = () => {
     switch (activeTab) {
       case "account":
@@ -26,9 +27,7 @@ function UserProfile() {
   };
   return (
     <div>
-      <Dashboard activeTab={activeTab} setActiveTab={setActiveTab}>
-        {/* {activeTab == 'account' && <Account />}
-           {activeTab == "orders" && <Order />} */}
+      <Dashboard>
         <ChildComponent />
       </Dashboard>
     </div>

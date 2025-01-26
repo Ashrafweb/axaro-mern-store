@@ -3,7 +3,7 @@ import Product from "../models/productModel.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   try {
-    const { name, description, price, category, quantity, brand } = req.fields;
+    const { name, description, price, category, quantity, brand, image } = req.fields;
 
     // Validation
     switch (true) {
@@ -32,7 +32,7 @@ const addProduct = asyncHandler(async (req, res) => {
 
 const updateProductDetails = asyncHandler(async (req, res) => {
   try {
-    const { name, description, price, category, quantity, brand } = req.fields;
+    const { name, description, price, category, quantity, brand, image } = req.fields;
 
     // Validation
     switch (true) {
@@ -48,6 +48,8 @@ const updateProductDetails = asyncHandler(async (req, res) => {
         return res.json({ error: "Category is required" });
       case !quantity:
         return res.json({ error: "Quantity is required" });
+      case !image:
+        return res.json({ error: "Image is required" });
     }
 
     const product = await Product.findByIdAndUpdate(
@@ -81,11 +83,11 @@ const fetchProducts = asyncHandler(async (req, res) => {
 
     const keyword = req.query.keyword
       ? {
-          name: {
-            $regex: req.query.keyword,
-            $options: "i",
-          },
-        }
+        name: {
+          $regex: req.query.keyword,
+          $options: "i",
+        },
+      }
       : {};
 
     const count = await Product.countDocuments({ ...keyword });

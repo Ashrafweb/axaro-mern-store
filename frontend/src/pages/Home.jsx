@@ -5,7 +5,6 @@ import Loader from "../components/Loader";
 import Header from "../components/Header";
 import Product from "./Products/Product";
 import Footer from "../components/Footer";
-
 const Home = () => {
   const { keyword } = useParams();
   const { data, isLoading, isError, error } = useGetProductsQuery({ keyword });

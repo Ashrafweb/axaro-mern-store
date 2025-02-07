@@ -4,7 +4,6 @@ import { setActiveTab } from "../redux/features/auth/authSlice";
 import { FaBars } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import { useState } from "react";
-//import AdminMenu from "../pages/Admin/AdminMenu";
 
 const Dashboard = ({ children }) => {
   const { userInfo } = useSelector((state) => state.auth);
@@ -17,7 +16,7 @@ const Dashboard = ({ children }) => {
   };
 
   const sideBarClass =
-    "hidden md:h-full left-0 md:relative md:block md:w-[20%] md:pb-4 md:rounded-md md:shadow-2xl md:shadow-gray-600 min-h-[400px]";
+    "hidden md:h-full left-0 md:relative md:block md:w-[20%] md:pb-4 md:rounded-md md:shadow-2xl md:shadow-gray-600 min-h-[400px] ";
   const mobileSidebarClass =
     (isMenuOpen ? "block " : "hidden ") +
     "w-[50%] md:hidden left-0 absolute top-[65px] bottom-0 h-screen bg-orange-600";
@@ -39,7 +38,7 @@ const Dashboard = ({ children }) => {
               <li className='text-center'>
                 <button
                   className={
-                    (activeTab == "dashboard"
+                    (activeTab === "dashboard"
                       ? "font-bold text-orange-500 "
                       : " ") + tabClass
                   }
@@ -51,7 +50,7 @@ const Dashboard = ({ children }) => {
               <li className='text-center'>
                 <button
                   className={
-                    (activeTab == "addProduct"
+                    (activeTab === "addProduct"
                       ? "font-bold text-orange-500 "
                       : " ") + tabClass
                   }
@@ -63,7 +62,7 @@ const Dashboard = ({ children }) => {
               <li className='text-center'>
                 <button
                   className={
-                    (activeTab == "category"
+                    (activeTab === "category"
                       ? "font-bold text-orange-500 "
                       : " ") + tabClass
                   }
@@ -75,7 +74,7 @@ const Dashboard = ({ children }) => {
               <li className='text-center'>
                 <button
                   className={
-                    (activeTab == "products"
+                    (activeTab === "products"
                       ? "font-bold text-orange-500 "
                       : " ") + tabClass
                   }
@@ -87,7 +86,7 @@ const Dashboard = ({ children }) => {
               <li className='text-center'>
                 <button
                   className={
-                    (activeTab == "allOrders"
+                    (activeTab === "allOrders"
                       ? "font-bold text-orange-500 "
                       : " ") + tabClass
                   }
@@ -99,7 +98,7 @@ const Dashboard = ({ children }) => {
               <li className='text-center'>
                 <button
                   className={
-                    (activeTab == "allUsers"
+                    (activeTab === "allUsers"
                       ? "font-bold text-orange-500 "
                       : " ") + tabClass
                   }
@@ -114,7 +113,7 @@ const Dashboard = ({ children }) => {
               <li className='text-center'>
                 <button
                   className={
-                    (activeTab == "account"
+                    (activeTab === "account"
                       ? "font-bold text-orange-500 "
                       : " ") + tabClass
                   }
@@ -126,7 +125,7 @@ const Dashboard = ({ children }) => {
               <li className='text-center'>
                 <button
                   className={
-                    (activeTab == "favourites"
+                    (activeTab === "favourites"
                       ? "font-bold text-orange-500 "
                       : " ") + tabClass
                   }
@@ -138,7 +137,7 @@ const Dashboard = ({ children }) => {
               <li className='text-center'>
                 <button
                   className={
-                    (activeTab == "myorders"
+                    (activeTab === "myorders"
                       ? "font-bold text-orange-500 "
                       : " ") + tabClass
                   }
@@ -150,7 +149,7 @@ const Dashboard = ({ children }) => {
               <li className='text-center'>
                 <button
                   className={
-                    (activeTab == "address"
+                    (activeTab === "address"
                       ? "font-bold text-orange-500 "
                       : " ") + tabClass
                   }
@@ -168,13 +167,13 @@ const Dashboard = ({ children }) => {
 
   return (
     <div className='px-10 pb-10 min-h-screen '>
-      <div className='flex justify-between  '>
+      <div className='flex justify-between items-center'>
         <button className='md:hidden' onClick={() => toggleMenu()}>
           <FaBars size={30} />
         </button>
-        <h1 className='text-4xl px-4 font-bold'>Dashboard</h1>
+        <h1 className='text-4xl px-4 font-bold text-gray-900 '>Dashboard</h1>
       </div>
-      <div className='flex flex-row justify-around items-start gap-x-20 pt-4  mt-4'>
+      <div className='flex flex-row justify-around items-start gap-x-20 pt-4 mt-4'>
         <aside className={sideBarClass}>
           <AdminideBarComponent />
         </aside>

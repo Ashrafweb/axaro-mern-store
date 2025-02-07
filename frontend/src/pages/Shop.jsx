@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useGetFilteredProductsQuery } from "../redux/api/productApiSlice";
 import { useFetchCategoriesQuery } from "../redux/api/categoryApiSlice";
-
 import {
   setCategories,
   setProducts,
@@ -17,14 +16,11 @@ const Shop = () => {
   const { categories, products, checked, radio } = useSelector(
     (state) => state.shop
   );
-
   const categoriesQuery = useFetchCategoriesQuery();
   const [priceFilter, setPriceFilter] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  const filteredProductsQuery = useGetFilteredProductsQuery({
-    checked,
-    radio,
-  });
+  const filteredProductsQuery = useGetFilteredProductsQuery({ checked, radio });
 
   useEffect(() => {
     if (!categoriesQuery.isLoading) {
@@ -35,17 +31,14 @@ const Shop = () => {
   useEffect(() => {
     if (!checked.length || !radio.length) {
       if (!filteredProductsQuery.isLoading) {
-        // Filter products based on both checked categories and price filter
         const filteredProducts = filteredProductsQuery.data.filter(
           (product) => {
-            // Check if the product price includes the entered price filter value
             return (
               product.price.toString().includes(priceFilter) ||
               product.price === parseInt(priceFilter, 10)
             );
           }
         );
-
         dispatch(setProducts(filteredProducts));
       }
     }
@@ -65,136 +58,113 @@ const Shop = () => {
     dispatch(setChecked(updatedChecked));
   };
 
-  // Add "All Brands" option to uniqueBrands
   const uniqueBrands = [
-    ...Array.from(
-      new Set(
-        filteredProductsQuery.data
-          ?.map((product) => product.brand)
-          .filter((brand) => brand !== undefined)
-      )
+    ...new Set(
+      filteredProductsQuery.data
+        ?.map((product) => product.brand)
+        .filter((brand) => brand !== undefined)
     ),
   ];
 
   const handlePriceChange = (e) => {
-    // Update the price filter state when the user types in the input filed
     setPriceFilter(e.target.value);
   };
 
-  const [isOpenFilter, setIsOpenFilter] = useState(false);
   return (
-    <>
-      <div className='container mx-auto'>
-        <div className='flex flex-col justify-center items-center md:justify-around  md:flex-row'>
-          <button
-            className='sm:hidden'
-            onClick={() => setIsOpenFilter(!isOpenFilter)}
-          >
-            <span className='flex gap-2 items-center justify-center'>
-              Filter
-              <FaFilter />
-            </span>
-          </button>
-          <div
-            className={
-              `${isOpenFilter ? "h-fit " : "h-0"} ` +
-              "bg-[#151515] p-3 mt-2 mb-2"
-            }
-          >
-            <h2 className='h4 text-center py-2 bg-black rounded-full mb-2'>
-              Filter by Categories
-            </h2>
+    <div className='container mx-auto p-4'>
+      <div className='flex flex-col md:flex-row md:items-start md:space-x-8'>
+        {/* Filter Button (Mobile) */}
+        <button
+          className='md:hidden mb-4 p-2 bg-orange-600 text-white rounded-md hover:bg-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-400'
+          onClick={() => setIsFilterOpen(!isFilterOpen)}
+        >
+          <span className='flex items-center gap-2'>
+            <FaFilter /> Filter
+          </span>
+        </button>
 
-            <div className='p-5 w-[15rem]'>
-              {categories?.map((c) => (
-                <div key={c._id} className='mb-2'>
-                  <div className='flex ietms-center mr-4'>
-                    <input
-                      type='checkbox'
-                      id='red-checkbox'
-                      onChange={(e) => handleCheck(e.target.checked, c._id)}
-                      className='w-4 h-4 text-pink-600 bg-gray-100 border-gray-300 rounded focus:ring-pink-500 dark:focus:ring-pink-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-                    />
+        {/* Filter Section */}
+        <aside
+          className={`w-full md:w-1/4 bg-orange-600 text-white p-4 rounded-md transition-all duration-300
+                         ${isFilterOpen ? "block" : "hidden"} md:block`}
+        >
+          <h2 className='text-lg font-semibold mb-4 text-center'>
+            Filter Options
+          </h2>
 
-                    <label
-                      htmlFor='pink-checkbox'
-                      className='ml-2 text-sm font-medium text-white dark:text-gray-300'
-                    >
-                      {c.name}
-                    </label>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <h2 className='h4 text-center py-2 bg-black rounded-full mb-2'>
-              Filter by Brands
-            </h2>
-
-            <div className='p-5'>
-              {uniqueBrands?.map((brand) => (
-                <>
-                  <div className='flex items-enter mr-4 mb-5'>
-                    <input
-                      type='radio'
-                      id={brand}
-                      name='brand'
-                      onChange={() => handleBrandClick(brand)}
-                      className='w-4 h-4 text-pink-400 bg-gray-100 border-gray-300 focus:ring-pink-500 dark:focus:ring-pink-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600'
-                    />
-
-                    <label
-                      htmlFor='pink-radio'
-                      className='ml-2 text-sm font-medium text-white dark:text-gray-300'
-                    >
-                      {brand}
-                    </label>
-                  </div>
-                </>
-              ))}
-            </div>
-
-            <h2 className='h4 text-center py-2 bg-black rounded-full mb-2'>
-              Filer by Price
-            </h2>
-
-            <div className='p-5 w-[15rem]'>
-              <input
-                type='text'
-                placeholder='Enter Price'
-                value={priceFilter}
-                onChange={handlePriceChange}
-                className='w-full px-3 py-2 placeholder-gray-400 border rounded-lg focus:outline-none focus:ring focus:border-pink-300'
-              />
-            </div>
-
-            <div className='p-5 pt-0'>
-              <button
-                className='w-full border my-4'
-                onClick={() => window.location.reload()}
-              >
-                Reset
-              </button>
-            </div>
+          <div className='mb-4'>
+            <h3 className='font-semibold mb-2'>Categories</h3>
+            {categories?.map((c) => (
+              <div key={c._id} className='mb-2'>
+                <label className='inline-flex items-center'>
+                  <input
+                    type='checkbox'
+                    onChange={(e) => handleCheck(e.target.checked, c._id)}
+                    className='form-checkbox h-4 w-4 mr-2 text-orange-400 focus:ring-2 focus:ring-orange-300'
+                  />
+                  <span>{c.name}</span>
+                </label>
+              </div>
+            ))}
           </div>
 
-          <div className='p-3'>
-            <h2 className='h4 text-center mb-2'>{products?.length} Products</h2>
-            <div className='flex flex-wrap justify-center items-center  '>
-              {products.length === 0 ? (
+          <div className='mb-4'>
+            <h3 className='font-semibold mb-2'>Brands</h3>
+            {uniqueBrands?.map((brand) => (
+              <div key={brand} className='mb-2'>
+                <label className='inline-flex items-center'>
+                  <input
+                    type='radio'
+                    name='brand'
+                    onChange={() => handleBrandClick(brand)}
+                    className='form-radio h-4 w-4 mr-2 text-orange-400 focus:ring-2 focus:ring-orange-300'
+                  />
+                  <span>{brand}</span>
+                </label>
+              </div>
+            ))}
+          </div>
+
+          <div>
+            <h3 className='font-semibold mb-2'>Price</h3>
+            <input
+              type='text'
+              placeholder='Enter Price'
+              value={priceFilter}
+              onChange={handlePriceChange}
+              className='w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:ring-orange-300 bg-orange-700 text-white'
+            />
+          </div>
+
+          <button
+            className='w-full mt-4 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-300'
+            onClick={() => window.location.reload()}
+          >
+            Reset
+          </button>
+        </aside>
+
+        {/* Product Grid */}
+        <div className='w-full md:w-3/4'>
+          <h2 className='text-2xl font-semibold mb-4'>
+            {products?.length} Products
+          </h2>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+            {products.length === 0 ? (
+              <div className='col-span-full text-center'>
                 <Loader />
-              ) : (
-                products?.map((p) => (
-                  <div className='p-3' key={p._id}>
-                    <ProductCard p={p} />
-                  </div>
-                ))
-              )}
-            </div>
+              </div>
+            ) : (
+              products?.map((p) => (
+                <div key={p._id}>
+                  <ProductCard p={p} />
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

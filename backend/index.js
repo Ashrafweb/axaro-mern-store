@@ -20,13 +20,10 @@ const app = express();
 app.use(
   cors({
     origin: env === "development" ? "http://localhost:5173" : "https://axaro-mern-store.vercel.app",
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Ensure OPTIONS is included
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true
   })
 );
-
-// Ensure preflight requests are processed
-app.options("*", cors());
 
 
 app.use(express.json());

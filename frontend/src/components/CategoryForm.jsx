@@ -1,4 +1,6 @@
 /* eslint-disable react/prop-types */
+import { useState } from "react";
+
 const CategoryForm = ({
   value,
   setValue,
@@ -6,28 +8,72 @@ const CategoryForm = ({
   buttonText = "Submit",
   handleDelete,
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await handleSubmit(e);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const onDelete = async (e) => {
+    e.preventDefault();
+    setIsDeleting(true);
+    try {
+      await handleDelete(e);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <div className='p-3'>
-      <form onSubmit={handleSubmit} className='space-y-3'>
+      <form onSubmit={onSubmit} className='space-y-3'>
         <input
           type='text'
-          className='py-3 px-4 border rounded-lg w-full'
+          className='input-field'
           placeholder='Write category name'
           value={value}
           onChange={(e) => setValue(e.target.value)}
+          required
         />
 
-        <div className='flex justify-between'>
-          <button className='bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 foucs:ring-orange-600 focus:ring-opacity-50'>
-            {buttonText}
+        <div className='flex justify-between gap-3'>
+          <button 
+            type="submit"
+            disabled={isSubmitting}
+            className='btn-primary flex items-center justify-center gap-2'
+          >
+            {isSubmitting ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <span>Saving...</span>
+              </>
+            ) : (
+              buttonText
+            )}
           </button>
 
           {handleDelete && (
             <button
-              onClick={handleDelete}
-              className='bg-red-500 text-white py-2 px-4 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 foucs:ring-red-500 focus:ring-opacity-50'
+              type="button"
+              onClick={onDelete}
+              disabled={isDeleting}
+              className='btn-danger flex items-center justify-center gap-2'
             >
-              Delete
+              {isDeleting ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Deleting...</span>
+                </>
+              ) : (
+                "Delete"
+              )}
             </button>
           )}
         </div>

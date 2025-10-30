@@ -18,6 +18,7 @@ const ProductList = () => {
   const [brand, setBrand] = useState("");
   const [stock, setStock] = useState(0);
   const [imageUrl, setImageUrl] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const [uploadProductImage] = useUploadProductImageMutation();
@@ -26,6 +27,7 @@ const ProductList = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
 
     try {
       const cloudImageUrl = await uploadFileHandler();
@@ -50,6 +52,8 @@ const ProductList = () => {
     } catch (error) {
       console.error(error);
       toast.error("Product create failed. Try Again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -140,7 +144,7 @@ const ProductList = () => {
           <div className='py-3'>
             <div className='flex flex-wrap sm:flex-nowrap'>
               <div className='one'>
-                <label htmlFor='name' className='font-semibold'>
+                <label htmlFor='name' className='label-text'>
                   Name
                 </label>{" "}
                 <br />
@@ -149,55 +153,60 @@ const ProductList = () => {
                   className={inputClass}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  required
                 />
               </div>
               <div className='two ml-10 '>
-                <label htmlFor='name block'>Price</label> <br />
+                <label htmlFor='name block' className='label-text'>Price</label> <br />
                 <input
                   type='number'
                   className={inputClass}
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
+                  required
                 />
               </div>
             </div>
             <div className='flex flex-wrap'>
               <div className='one'>
-                <label htmlFor='name block'>Quantity</label> <br />
+                <label htmlFor='name block' className='label-text'>Quantity</label> <br />
                 <input
                   type='number'
                   className={inputClass}
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
+                  required
                 />
               </div>
               <div className='two ml-10 '>
-                <label htmlFor='name block'>Brand</label> <br />
+                <label htmlFor='name block' className='label-text'>Brand</label> <br />
                 <input
                   type='text'
                   className={inputClass}
                   value={brand}
                   onChange={(e) => setBrand(e.target.value)}
+                  required
                 />
               </div>
             </div>
 
             <div className='w-full'>
-              <label htmlFor='' className='my-5'>
+              <label htmlFor='' className='label-text my-5 block'>
                 Description
               </label>
               <textarea
                 type='text'
                 rows={4}
-                className=' bg-transparent rounded-md w-full border-[3px] border-gray-400'
+                className=' bg-transparent rounded-md w-full border-[3px] border-gray-400 p-3'
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                required
               ></textarea>
             </div>
 
             <div className='flex justify-between '>
               <div className='w-[45%] mt-4 sm:mt-6'>
-                <label htmlFor='name block' className='text-md sm:text-lg'>
+                <label htmlFor='name block' className='label-text'>
                   Count In Stock
                 </label>{" "}
                 <br />
@@ -206,11 +215,12 @@ const ProductList = () => {
                   className={inputClass}
                   value={stock}
                   onChange={(e) => setStock(e.target.value)}
+                  required
                 />
               </div>
 
               <div className=' w-[45%] mt-4 sm:mt-6'>
-                <label htmlFor='category' className='text-md sm:text-lg'>
+                <label htmlFor='category' className='label-text'>
                   Category
                 </label>{" "}
                 <br />
@@ -219,7 +229,9 @@ const ProductList = () => {
                   id='category'
                   className={inputClass}
                   onChange={(e) => setCategory(e.target.value)}
+                  required
                 >
+                  <option value="">Select a category</option>
                   {categories?.map((c) => (
                     <option key={c._id} value={c._id}>
                       {c.name}
@@ -231,9 +243,17 @@ const ProductList = () => {
 
             <button
               onClick={handleSubmit}
-              className='py-2 md:py-4 w-full mt-5 rounded-lg text-lg font-bold bg-orange-600'
+              disabled={isSubmitting}
+              className='btn-primary py-3 md:py-4 w-full mt-5 text-lg font-bold flex items-center justify-center gap-2'
             >
-              ADD PRODUCT
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <span>ADDING PRODUCT...</span>
+                </>
+              ) : (
+                "ADD PRODUCT"
+              )}
             </button>
           </div>
         </div>

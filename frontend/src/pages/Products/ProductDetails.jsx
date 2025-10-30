@@ -65,12 +65,12 @@ const ProductDetails = () => {
 
   return (
     <>
-      <div>
+      <div className='px-4 sm:px-6 lg:px-10'>
         <Link
           to='/'
-          className='text-orange-600 font-semibold hover:underline ml-10'
+          className='text-primary hover:text-primary-dark font-semibold hover:underline transition-colors'
         >
-          Go Back
+          ← Go Back
         </Link>
       </div>
 
@@ -161,7 +161,7 @@ const ProductDetails = () => {
                 <button
                   onClick={addToCartHandler}
                   disabled={product.countInStock === 0}
-                  className='bg-orange-600 text-white py-2 px-4 rounded-lg mt-4 md:mt-0'
+                  className='btn-primary py-3 px-6 mt-4 md:mt-0 w-full md:w-auto'
                 >
                   Add To Cart
                 </button>

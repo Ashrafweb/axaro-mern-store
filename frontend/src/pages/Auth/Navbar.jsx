@@ -33,19 +33,19 @@ const Dropdown = ({ items, trigger }) => {
     <div className='relative inline-block' ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className='text-orange-500 hover:text-white cursor-pointer'
+        className='cursor-pointer'
       >
         {trigger}
       </button>
       {isOpen && (
-        <div className='absolute right-0 top-10 w-[150px] bg-white dark:bg-gray-800 shadow-md rounded-md z-10 transition-opacity duration-300'>
+        <div className='absolute right-0 top-10 w-[150px] bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border shadow-lg rounded-lg z-10 transition-opacity duration-300'>
           <ul className='list-none text-left'>
             {items.map((item, index) => (
               <li
                 key={index}
-                className={`text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 py-2 px-4 ${
+                className={`text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface py-2 px-4 font-medium ${
                   index < items.length - 1
-                    ? "border-b border-gray-200 dark:border-gray-700"
+                    ? "border-b border-light-border dark:border-dark-border"
                     : ""
                 }`}
               >
@@ -124,21 +124,21 @@ const Navbar = () => {
               <Link to='../login'>
                 <button
                   onClick={() => setOpenMenu(false)}
-                  className='text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-6 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-500 dark:focus:ring-orange-600'
+                  className='btn-primary text-sm px-6 py-2 transition-transform transform hover:scale-105'
                 >
                   Login
                 </button>
               </Link>
             </div>
           ) : (
-            <div className='grid'>
-              <p className='text-orange-500 hover:text-white cursor-pointer'>
+            <div className='grid gap-2'>
+              <p className='text-primary hover:text-primary-dark cursor-pointer font-medium'>
                 Hi, {userInfo?.username}
               </p>
               <Link
                 onClick={logOutHandler}
                 to='/'
-                className='px-4 font-semibold bg-orange-600 rounded-sm py-1 mt-1 text-white'
+                className='btn-primary text-center text-sm px-4 py-2'
               >
                 Logout
               </Link>
@@ -146,19 +146,19 @@ const Navbar = () => {
           )}
         </div>
         <ul
-          className='list-none text-center mt-10'
+          className='list-none text-center mt-10 space-y-2'
           onClick={() => setOpenMenu(false)}
         >
-          <li className='py-2 hover:text-orange-500'>
+          <li className='py-3 hover:text-primary font-medium text-lg'>
             <Link to='/'>Home</Link>
           </li>
-          <li className='py-2 hover:text-orange-500'>
+          <li className='py-3 hover:text-primary font-medium text-lg'>
             <Link to='/shop'>Shop</Link>
           </li>
-          <li className='py-2 hover:text-orange-500'>
+          <li className='py-3 hover:text-primary font-medium text-lg'>
             <Link to='/categories'>Category</Link>
           </li>
-          <li className='py-2 hover:text-orange-500'>
+          <li className='py-3 hover:text-primary font-medium text-lg'>
             <Link to='/profile'>Profile</Link>
           </li>
         </ul>
@@ -187,7 +187,7 @@ const Navbar = () => {
               {!userInfo ? (
                 <div className='mr-2'>
                   <Link to='../login'>
-                    <button className='text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm px-6 py-2 text-center dark:bg-orange-600 dark:hover:bg-orange-500 dark:focus:ring-orange-600 transition-transform transform hover:scale-105'>
+                    <button className='btn-primary text-sm px-6 py-2 transition-transform transform hover:scale-105'>
                       Login
                     </button>
                   </Link>
@@ -210,7 +210,7 @@ const Navbar = () => {
                     },
                   ]}
                   trigger={
-                    <p className='hidden sm:block text-orange-500 hover:text-white cursor-pointer'>
+                    <p className='hidden sm:block text-primary hover:text-primary-dark cursor-pointer font-medium'>
                       Hi, {userInfo?.username}
                     </p>
                   }
@@ -230,7 +230,7 @@ const Navbar = () => {
                 <div className='absolute top-[-10px] right-0'>
                   {cartItems.length > 0 && (
                     <span>
-                      <span className='px-1 py-0 text-sm text-white bg-orange-500 rounded-full'>
+                      <span className='px-1 py-0 text-sm text-white bg-primary rounded-full'>
                         {cartItems.reduce((a, c) => a + c.qty, 0)}
                       </span>
                     </span>
@@ -258,7 +258,7 @@ const Navbar = () => {
               <li>
                 <Link
                   to='/'
-                  className='block py-2 px-3 text-white bg-orange-500 rounded md:bg-transparent md:text-orange-500 md:p-0 md:dark:text-orange-500 transition-transform transform hover:scale-105'
+                  className='block py-2 px-3 text-white bg-primary rounded md:bg-transparent md:text-primary md:p-0 md:dark:text-primary transition-transform transform hover:scale-105 font-medium'
                   aria-current='page'
                 >
                   Home
@@ -267,7 +267,7 @@ const Navbar = () => {
               <li>
                 <Link
                   to='../shop'
-                  className='block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-orange-500 md:p-0 md:dark:hover:text-orange-500 dark:text-white dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 transition-transform transform hover:scale-105'
+                  className='block py-2 px-3 text-light-text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 md:dark:hover:text-primary dark:text-dark-text-primary dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 transition-transform transform hover:scale-105 font-medium'
                 >
                   Shop
                 </Link>

@@ -26,6 +26,8 @@ const AdminProductUpdate = () => {
   const [quantity, setQuantity] = useState(productData?.quantity || "");
   const [brand, setBrand] = useState(productData?.brand || "");
   const [stock, setStock] = useState(productData?.countInStock);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // hook
   const navigate = useNavigate();
@@ -89,6 +91,7 @@ const AdminProductUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       const imageUrl = await uploadFileHandler();
       const formData = new FormData();
@@ -122,6 +125,8 @@ const AdminProductUpdate = () => {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 2000,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -132,6 +137,7 @@ const AdminProductUpdate = () => {
       );
       if (!answer) return;
 
+      setIsDeleting(true);
       const { data } = await deleteProduct(params._id);
       toast.success(`"${data.name}" is deleted`, {
         position: toast.POSITION.TOP_RIGHT,
@@ -144,6 +150,8 @@ const AdminProductUpdate = () => {
         position: toast.POSITION.TOP_RIGHT,
         autoClose: 2000,
       });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -200,56 +208,64 @@ const AdminProductUpdate = () => {
                 </div>
               </div>
 
-              <div className='flex flex-wrap'>
+              <div className='flex flex-wrap gap-4'>
                 <div>
-                  <label htmlFor='name block'>Quantity</label> <br />
+                  <label htmlFor='name block' className='label-text'>Quantity</label> <br />
                   <input
                     type='number'
                     min='1'
-                    className='p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white mr-[5rem]'
+                    className='p-4 mb-3 w-full md:w-[30rem] border rounded-lg bg-[#101011] text-white'
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
+                    required
                   />
                 </div>
                 <div>
-                  <label htmlFor='name block'>Brand</label> <br />
+                  <label htmlFor='name block' className='label-text'>Brand</label> <br />
                   <input
                     type='text'
-                    className='p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white '
+                    className='p-4 mb-3 w-full md:w-[30rem] border rounded-lg bg-[#101011] text-white'
                     value={brand}
                     onChange={(e) => setBrand(e.target.value)}
+                    required
                   />
                 </div>
               </div>
 
-              <label htmlFor='' className='my-5'>
+              <label htmlFor='' className='label-text block my-5'>
                 Description
               </label>
               <textarea
                 type='text'
-                className='p-2 mb-3 bg-[#101011]  border rounded-lg w-[95%] text-white'
+                rows='4'
+                className='p-3 mb-3 bg-[#101011]  border rounded-lg w-full text-white'
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                required
               />
 
-              <div className='flex justify-between'>
-                <div>
-                  <label htmlFor='name block'>Count In Stock</label> <br />
+              <div className='flex flex-wrap gap-4 justify-between'>
+                <div className='flex-1 min-w-[250px]'>
+                  <label htmlFor='name block' className='label-text'>Count In Stock</label> <br />
                   <input
                     type='text'
-                    className='p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white '
+                    className='p-4 mb-3 w-full border rounded-lg bg-[#101011] text-white'
                     value={stock}
                     onChange={(e) => setStock(e.target.value)}
+                    required
                   />
                 </div>
 
-                <div>
-                  <label htmlFor=''>Category</label> <br />
+                <div className='flex-1 min-w-[250px]'>
+                  <label htmlFor='' className='label-text'>Category</label> <br />
                   <select
                     placeholder='Choose Category'
-                    className='p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white mr-[5rem]'
+                    className='p-4 mb-3 w-full border rounded-lg bg-[#101011] text-white'
                     onChange={(e) => setCategory(e.target.value)}
+                    value={category}
+                    required
                   >
+                    <option value="">Select a category</option>
                     {categories?.map((c) => (
                       <option key={c._id} value={c._id}>
                         {c.name}
@@ -259,18 +275,34 @@ const AdminProductUpdate = () => {
                 </div>
               </div>
 
-              <div className=''>
+              <div className='flex gap-4'>
                 <button
                   onClick={handleSubmit}
-                  className='py-4 px-10 mt-5 rounded-lg text-lg font-bold  bg-green-600 mr-6'
+                  disabled={isSubmitting}
+                  className='bg-green-600 hover:bg-green-700 text-white font-bold py-4 px-10 mt-5 rounded-lg text-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2'
                 >
-                  Update
+                  {isSubmitting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Updating...</span>
+                    </>
+                  ) : (
+                    "Update"
+                  )}
                 </button>
                 <button
                   onClick={handleDelete}
-                  className='py-4 px-10 mt-5 rounded-lg text-lg font-bold  bg-pink-600'
+                  disabled={isDeleting}
+                  className='btn-danger py-4 px-10 mt-5 text-lg flex items-center justify-center gap-2'
                 >
-                  Delete
+                  {isDeleting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                      <span>Deleting...</span>
+                    </>
+                  ) : (
+                    "Delete"
+                  )}
                 </button>
               </div>
             </div>

@@ -36,8 +36,8 @@ const ProductTabs = ({
               className={`py-2 px-4 rounded-t-lg md:rounded-tl-lg md:rounded-none text-lg font-medium transition-colors duration-300 w-full md:w-auto
                         ${
                           activeTab === 1
-                            ? "bg-orange-500 text-white"
-                            : "text-gray-600 hover:bg-orange-100 hover:text-orange-500"
+                            ? "bg-primary text-white"
+                            : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-primary/10 hover:text-primary"
                         }`}
               onClick={() => handleTabClick(1)}
             >
@@ -47,8 +47,8 @@ const ProductTabs = ({
               className={`py-2 px-4 rounded-t-lg md:rounded-none text-lg font-medium transition-colors duration-300 w-full md:w-auto
                         ${
                           activeTab === 2
-                            ? "bg-orange-500 text-white"
-                            : "text-gray-600 hover:bg-orange-100 hover:text-orange-500"
+                            ? "bg-primary text-white"
+                            : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-primary/10 hover:text-primary"
                         }`}
               onClick={() => handleTabClick(2)}
             >
@@ -58,8 +58,8 @@ const ProductTabs = ({
               className={`py-2 px-4 rounded-t-lg md:rounded-tr-lg md:rounded-none text-lg font-medium transition-colors duration-300 w-full md:w-auto
                         ${
                           activeTab === 3
-                            ? "bg-orange-500 text-white"
-                            : "text-gray-600 hover:bg-orange-100 hover:text-orange-500"
+                            ? "bg-primary text-white"
+                            : "text-light-text-secondary dark:text-dark-text-secondary hover:bg-primary/10 hover:text-primary"
                         }`}
               onClick={() => handleTabClick(3)}
             >
@@ -77,7 +77,7 @@ const ProductTabs = ({
                   <div>
                     <label
                       htmlFor='rating'
-                      className='block text-lg font-medium text-gray-700'
+                      className='label-text'
                     >
                       Rating
                     </label>
@@ -86,7 +86,7 @@ const ProductTabs = ({
                       required
                       value={rating}
                       onChange={(e) => setRating(e.target.value)}
-                      className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 sm:text-sm bg-white'
+                      className='input-field'
                     >
                       <option value=''>Select</option>
                       <option value='1'>Inferior</option>
@@ -99,7 +99,7 @@ const ProductTabs = ({
                   <div>
                     <label
                       htmlFor='comment'
-                      className='block text-lg font-medium text-gray-700'
+                      className='label-text'
                     >
                       Comment
                     </label>
@@ -109,21 +109,28 @@ const ProductTabs = ({
                       required
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
-                      className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 sm:text-sm bg-white'
+                      className='input-field'
                     ></textarea>
                   </div>
                   <button
                     type='submit'
                     disabled={loadingProductReview}
-                    className='bg-orange-500 text-white py-2 px-6 rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-200'
+                    className='btn-primary flex items-center justify-center gap-2'
                   >
-                    Submit
+                    {loadingProductReview ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Submitting...</span>
+                      </>
+                    ) : (
+                      "Submit"
+                    )}
                   </button>
                 </form>
               ) : (
-                <p className='text-gray-700'>
+                <p className='text-light-text-secondary dark:text-dark-text-secondary font-medium'>
                   Please{" "}
-                  <Link to='/login' className='text-orange-500 hover:underline'>
+                  <Link to='/login' className='text-primary hover:text-primary-dark hover:underline transition-colors'>
                     sign in
                   </Link>{" "}
                   to write a review
@@ -135,17 +142,17 @@ const ProductTabs = ({
           {activeTab === 2 && (
             <div className='mt-4 space-y-4'>
               {product.reviews.length === 0 && (
-                <p className='text-gray-700'>No Reviews</p>
+                <p className='text-light-text-secondary dark:text-dark-text-secondary font-medium'>No Reviews</p>
               )}
               {product.reviews.map((review) => (
-                <div key={review._id} className='bg-gray-100 p-4 rounded-lg'>
+                <div key={review._id} className='card'>
                   <div className='flex justify-between items-center mb-2'>
-                    <strong className='text-gray-700'>{review.name}</strong>
-                    <p className='text-gray-500 text-sm'>
+                    <strong className='text-light-text-primary dark:text-dark-text-primary font-semibold'>{review.name}</strong>
+                    <p className='text-light-text-muted dark:text-dark-text-muted text-sm'>
                       {review.createdAt.substring(0, 10)}
                     </p>
                   </div>
-                  <p className='text-gray-700'>{review.comment}</p>
+                  <p className='text-light-text-secondary dark:text-dark-text-secondary mb-2'>{review.comment}</p>
                   <Ratings value={review.rating} />
                 </div>
               ))}

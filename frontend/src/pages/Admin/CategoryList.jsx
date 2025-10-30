@@ -101,22 +101,19 @@ const CategoryList = () => {
         <br />
         <hr />
 
-        <div className='flex flex-wrap'>
+        <div className='flex flex-wrap gap-3'>
           {categories?.map((category) => (
-            <div key={category._id}>
-              <button
-                className='bg-white border border-orange-500 text-orange-500 py-2 px-4 rounded-lg m-3 hover:bg-orange-500 hover:text-white focus:outline-none foucs:ring-2 focus:ring-orange-500 focus:ring-opacity-50'
-                onClick={() => {
-                  {
-                    setModalVisible(true);
-                    setSelectedCategory(category);
-                    setUpdatingName(category.name);
-                  }
-                }}
-              >
-                {category.name}
-              </button>
-            </div>
+            <button
+              key={category._id}
+              className='bg-white dark:bg-dark-card border-2 border-primary text-primary py-2 px-4 rounded-lg hover:bg-primary hover:text-white dark:hover:bg-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 font-medium transition-colors'
+              onClick={() => {
+                setModalVisible(true);
+                setSelectedCategory(category);
+                setUpdatingName(category.name);
+              }}
+            >
+              {category.name}
+            </button>
           ))}
         </div>
 

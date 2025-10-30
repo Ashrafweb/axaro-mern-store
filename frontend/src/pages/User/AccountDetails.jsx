@@ -45,71 +45,73 @@ const Account = () => {
   };
 
   return (
-    <div className='container mx-auto p-4 mt-1 py-2 md:py-7'>
-      <div className='flex gap-4 md:gap-20 justify-center align-center md:flex md:space-x-4'>
-        <div className='md:w-1/3'>
-          <h2 className='text-2xl font-semibold mb-4'>Update Profile</h2>
-          <form onSubmit={submitHandler}>
-            <div className='mb-4'>
-              <label className='block text-white mb-2'>Name</label>
+    <div className='container mx-auto px-4 py-4 md:py-7'>
+      <div className='flex justify-center items-start'>
+        <div className='w-full max-w-2xl'>
+          <h2 className='text-2xl md:text-3xl font-bold mb-6'>Update Profile</h2>
+          <form onSubmit={submitHandler} className="space-y-5">
+            <div>
+              <label className='label-text'>Name</label>
               <input
                 type='text'
                 placeholder='Enter name'
-                className='form-input p-4 rounded-sm w-full'
+                className='input-field'
                 value={username}
                 onChange={(e) => setUserName(e.target.value)}
+                required
               />
             </div>
 
-            <div className='mb-4'>
-              <label className='block text-white mb-2'>Email Address</label>
+            <div>
+              <label className='label-text'>Email Address</label>
               <input
                 type='email'
                 placeholder='Enter email'
-                className='form-input p-4 rounded-sm w-full'
+                className='input-field'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
-            <div className='mb-4'>
-              <label className='block text-white mb-2'>Password</label>
+            <div>
+              <label className='label-text'>Password</label>
               <input
                 type='password'
-                placeholder='Enter password'
-                className='form-input p-4 rounded-sm w-full'
+                placeholder='Enter password (leave blank to keep current)'
+                className='input-field'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
 
-            <div className='mb-4'>
-              <label className='block text-white mb-2'>Confirm Password</label>
+            <div>
+              <label className='label-text'>Confirm Password</label>
               <input
                 type='password'
                 placeholder='Confirm password'
-                className='form-input p-4 rounded-sm w-full'
+                className='input-field'
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </div>
 
-            <div className='flex justify-between'>
+            <div className='flex justify-start'>
               <button
                 type='submit'
-                className='bg-orange-500 text-white py-2 px-4 rounded hover:bg-orange-600'
+                disabled={loadingUpdateProfile}
+                className='btn-primary flex items-center justify-center gap-2'
               >
-                Update
+                {loadingUpdateProfile ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>Updating...</span>
+                  </>
+                ) : (
+                  "Update Profile"
+                )}
               </button>
-
-              {/* <Link
-                to='/user-orders'
-                className='bg-orange-600 text-white py-2 px-4 rounded hover:bg-orange-700'
-              >
-                My Orders
-              </Link> */}
             </div>
-            {loadingUpdateProfile && <Loader />}
           </form>
         </div>
       </div>

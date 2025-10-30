@@ -2,22 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  width: 100%;
+@layer base {
+  body {
+    width: 100%;
+    font-family: 'Open Sans', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  input,
+  textarea,
+  select {
+    color: #0a0a0a;
+  }
 }
 
-input,
-textarea {
-  color: #000;
-}
-.dark {
-  background-color: #121212;
-  color: #fff;
-  overflow: hidden;
-}
+@layer components {
+  /* Theme Classes */
+  .dark {
+    background-color: #0a0a0a;
+    color: #ffffff;
+    overflow-x: hidden;
+  }
 
-.light {
-  background-color: #fff;
-  color: #333;
-  overflow: hidden;
+  .light {
+    background-color: #ffffff;
+    color: #0a0a0a;
+    overflow-x: hidden;
+  }
+
+  /* Button Components */
+  .btn-primary {
+    @apply bg-primary hover:bg-primary-dark text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary hover:bg-secondary-dark text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white font-medium px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Input Components */
+  .input-field {
+    @apply w-full p-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow duration-200;
+  }
+
+  /* Label Components */
+  .label-text {
+    @apply block text-sm font-medium mb-2;
+  }
+
+  .dark .label-text {
+    @apply text-dark-text-primary;
+  }
+
+  .light .label-text {
+    @apply text-light-text-primary;
+  }
+
+  /* Card Components */
+  .card {
+    @apply rounded-lg shadow-md p-4;
+  }
+
+  .dark .card {
+    @apply bg-dark-card border border-dark-border;
+  }
+
+  .light .card {
+    @apply bg-light-card border border-light-border;
+  }
 }

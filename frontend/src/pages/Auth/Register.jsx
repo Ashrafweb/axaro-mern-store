@@ -48,105 +48,114 @@ const Register = () => {
   };
 
   return (
-    <section className='pl-[10rem] flex flex-wrap md:flex-nowrap flex-row-reverse '>
-      <div className='max-w-[400px] sm:max-w-[600px] mx-auto text-center px-2 md:px-4  mt-2 md:mt-[100px]'>
-        <h1 className='text-xl md:text-5xl font-bold py-2 md:py-4'>
-          Welcome To <span className='text-orange-500'>Axaro</span>
+    <section className='min-h-screen px-4 sm:px-6 lg:px-8 py-4 md:py-8 lg:pl-[10rem] flex flex-col-reverse lg:flex-row-reverse items-center justify-center gap-8 lg:gap-12'>
+      <div className='w-full max-w-md lg:max-w-xl text-center px-4'>
+        <h1 className='text-2xl md:text-4xl lg:text-5xl font-bold mb-4'>
+          Welcome To <span className='text-primary'>Axaro</span>
         </h1>
-        <p className='text-balance text-md sm:text-xl font-semibold'>
+        <p className='text-base md:text-lg lg:text-xl text-dark-text-secondary dark:text-dark-text-secondary font-medium'>
           Shop a curated selection of smartphones, laptops, and more from top
           brands.
         </p>
       </div>
-      <div className='mr-[4rem] mt-[5rem]'>
-        <h1 className='text-2xl font-semibold mb-4'>Register</h1>
+      <div className='w-full max-w-md lg:max-w-lg'>
+        <h1 className='text-2xl md:text-3xl font-bold mb-6'>Register</h1>
 
-        <form onSubmit={submitHandler} className='container w-[40rem]'>
-          <div className='my-[2rem]'>
+        <form onSubmit={submitHandler} className='space-y-5'>
+          <div>
             <label
               htmlFor='name'
-              className='block text-sm font-medium text-white'
+              className='label-text'
             >
               Name
             </label>
             <input
               type='text'
               id='name'
-              className='mt-1 p-2 border rounded w-full'
+              className='input-field'
               placeholder='Enter name'
               value={username}
               onChange={(e) => setName(e.target.value)}
+              required
             />
           </div>
 
-          <div className='my-[2rem]'>
+          <div>
             <label
               htmlFor='email'
-              className='block text-sm font-medium text-white'
+              className='label-text'
             >
               Email Address
             </label>
             <input
               type='email'
               id='email'
-              className='mt-1 p-2 border rounded w-full'
+              className='input-field'
               placeholder='Enter email'
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
 
-          <div className='my-[2rem]'>
+          <div>
             <label
               htmlFor='password'
-              className='block text-sm font-medium text-white'
+              className='label-text'
             >
               Password
             </label>
             <input
               type='password'
               id='password'
-              className='mt-1 p-2 border rounded w-full'
+              className='input-field'
               placeholder='Enter password'
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
 
-          <div className='my-[2rem]'>
+          <div>
             <label
               htmlFor='confirmPassword'
-              className='block text-sm font-medium text-white'
+              className='label-text'
             >
               Confirm Password
             </label>
             <input
               type='password'
               id='confirmPassword'
-              className='mt-1 p-2 border rounded w-full'
+              className='input-field'
               placeholder='Confirm password'
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
+              required
             />
           </div>
 
           <button
             disabled={isLoading}
             type='submit'
-            className='bg-orange-500 text-white px-4 py-2 rounded cursor-pointer my-[1rem]'
+            className='btn-primary w-full flex items-center justify-center gap-2'
           >
-            {isLoading ? "Registering..." : "Register"}
+            {isLoading ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                <span>Registering...</span>
+              </>
+            ) : (
+              "Register"
+            )}
           </button>
-
-          {isLoading && <Loader />}
         </form>
 
-        <div className='mt-4'>
-          <p className='text-white'>
+        <div className='mt-6 text-center lg:text-left'>
+          <p className='font-medium'>
             Already have an account?{" "}
             <Link
               to={redirect ? `/login?redirect=${redirect}` : "/login"}
-              className='text-orange-500 hover:underline'
+              className='text-primary hover:text-primary-dark hover:underline transition-colors'
             >
               Login
             </Link>

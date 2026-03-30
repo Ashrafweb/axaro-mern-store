@@ -1,147 +1,106 @@
 /* eslint-disable no-unused-vars */
-import Chart from "react-apexcharts";
-import { useGetUsersQuery } from "../../redux/api/usersApiSlice";
 import {
-  useGetTotalOrdersQuery,
-  useGetTotalSalesByDateQuery,
-  useGetTotalSalesQuery,
-} from "../../redux/api/orderApiSlice";
+	BarChart,
+	Bar,
+	XAxis,
+	YAxis,
+	CartesianGrid,
+	Tooltip,
+	ResponsiveContainer,
+} from "recharts";
+import { useGetUsersQuery } from "@/redux/api/usersApiSlice";
+import {
+	useGetTotalOrdersQuery,
+	useGetTotalSalesByDateQuery,
+	useGetTotalSalesQuery,
+} from "@/redux/api/orderApiSlice";
 
 import { useState, useEffect } from "react";
-import AdminMenu from "./AdminMenu";
 import OrderList from "./OrderList";
-import Loader from "../../components/Loader";
+import Loader from "@/components/Loader";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DollarSign, Users, Package } from "lucide-react";
 
 const Overview = () => {
-  const { data: sales, isLoading } = useGetTotalSalesQuery();
-  const { data: customers, isLoading: loading } = useGetUsersQuery();
-  const { data: orders, isLoading: loadingTwo } = useGetTotalOrdersQuery();
-  const { data: salesDetail } = useGetTotalSalesByDateQuery();
+	const { data: sales, isLoading } = useGetTotalSalesQuery();
+	const { data: customers, isLoading: loading } = useGetUsersQuery();
+	const { data: orders, isLoading: loadingTwo } = useGetTotalOrdersQuery();
+	const { data: salesDetail } = useGetTotalSalesByDateQuery();
 
-  const [state, setState] = useState({
-    options: {
-      chart: {
-        type: "line",
-      },
-      tooltip: {
-        theme: "dark",
-      },
-      colors: ["#00E396"],
-      dataLabels: {
-        enabled: true,
-      },
-      stroke: {
-        curve: "smooth",
-      },
-      title: {
-        text: "Sales Trend",
-        align: "left",
-      },
-      grid: {
-        borderColor: "#ccc",
-      },
-      markers: {
-        size: 1,
-      },
-      xaxis: {
-        categories: [],
-        title: {
-          text: "Date",
-        },
-      },
-      yaxis: {
-        title: {
-          text: "Sales",
-        },
-        min: 0,
-      },
-      legend: {
-        position: "top",
-        horizontalAlign: "right",
-        floating: true,
-        offsetY: -25,
-        offsetX: -5,
-      },
-    },
-    series: [{ name: "Sales", data: [] }],
-  });
+	const [chartData, setChartData] = useState([]);
 
-  useEffect(() => {
-    if (salesDetail) {
-      const formattedSalesDate = salesDetail.map((item) => ({
-        x: item._id,
-        y: item.totalSales,
-      }));
+	useEffect(() => {
+		if (salesDetail) {
+			const formattedSalesDate = salesDetail.map((item) => ({
+				x: item._id,
+				y: item.totalSales,
+			}));
+			setChartData(formattedSalesDate);
+		}
+	}, [salesDetail]);
 
-      setState((prevState) => ({
-        ...prevState,
-        options: {
-          ...prevState.options,
-          xaxis: {
-            categories: formattedSalesDate.map((item) => item.x),
-          },
-        },
+	return (
+		<>
+			<section className='xl:ml-[2rem] md:ml-[0rem]'>
+				<div className='w-[80%] flex flex-col md:flex-row justify-around flex-wrap gap-4'>
+					<Card className='w-full md:w-[10rem] lg:w-[15rem]'>
+						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+							<CardTitle className='text-sm font-medium'>Sales</CardTitle>
+							<DollarSign className='h-4 w-4 text-muted-foreground' />
+						</CardHeader>
+						<CardContent>
+							<div className='text-2xl font-bold'>
+								$ {isLoading ? <Loader /> : sales.totalSales.toFixed(2)}
+							</div>
+						</CardContent>
+					</Card>
+					<Card className='w-full md:w-[10rem] lg:w-[15rem]'>
+						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+							<CardTitle className='text-sm font-medium'>Customers</CardTitle>
+							<Users className='h-4 w-4 text-muted-foreground' />
+						</CardHeader>
+						<CardContent>
+							<div className='text-2xl font-bold'>
+								{isLoading ? <Loader /> : customers?.length}
+							</div>
+						</CardContent>
+					</Card>
+					<Card className='w-full md:w-[10rem] lg:w-[15rem]'>
+						<CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
+							<CardTitle className='text-sm font-medium'>All Orders</CardTitle>
+							<Package className='h-4 w-4 text-muted-foreground' />
+						</CardHeader>
+						<CardContent>
+							<div className='text-2xl font-bold'>
+								{isLoading ? <Loader /> : orders?.totalOrders}
+							</div>
+						</CardContent>
+					</Card>
+				</div>
 
-        series: [
-          { name: "Sales", data: formattedSalesDate.map((item) => item.y) },
-        ],
-      }));
-    }
-  }, [salesDetail]);
+				<Card className='ml-[10rem] mt-[4rem]'>
+					<CardHeader>
+						<CardTitle>Sales Trend</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<ResponsiveContainer width='100%' height={300}>
+							<BarChart data={chartData}>
+								<CartesianGrid strokeDasharray='3 3' />
+								<XAxis dataKey='x' />
+								<YAxis />
+								<Tooltip />
+								<Bar dataKey='y' fill='hsl(var(--primary))' />
+							</BarChart>
+						</ResponsiveContainer>
+					</CardContent>
+				</Card>
 
-  const cardClass =
-    "rounded-lg bg-transparent border-2 border-gray-600 p-5 w-full md:w-[10rem] lg:w-[15rem] mt-5";
-  return (
-    <>
-      <section className='xl:ml-[2rem] md:ml-[0rem]'>
-        <div className='w-[80%] flex flex-col md:flex-row justify-around flex-wrap '>
-          <div className={cardClass}>
-            <div className='font-bold rounded-full w-[3rem] bg-orange-700 text-center p-3'>
-              $
-            </div>
-
-            <p className='mt-5'>Sales</p>
-            <h1 className='text-xl font-bold'>
-              $ {isLoading ? <Loader /> : sales.totalSales.toFixed(2)}
-            </h1>
-          </div>
-          <div className={cardClass}>
-            <div className='font-bold rounded-full w-[3rem] bg-orange-700 text-center p-3'>
-              $
-            </div>
-
-            <p className='mt-5'>Customers</p>
-            <h1 className='text-xl font-bold'>
-              $ {isLoading ? <Loader /> : customers?.length}
-            </h1>
-          </div>
-          <div className={cardClass}>
-            <div className='font-bold rounded-full w-[3rem] bg-orange-700 text-center p-3'>
-              $
-            </div>
-
-            <p className='mt-5'>All Orders</p>
-            <h1 className='text-xl font-bold'>
-              $ {isLoading ? <Loader /> : orders?.totalOrders}
-            </h1>
-          </div>
-        </div>
-
-        <div className='ml-[10rem] mt-[4rem]'>
-          <Chart
-            options={state.options}
-            series={state.series}
-            type='bar'
-            width='70%'
-          />
-        </div>
-
-        <div className='mt-[4rem]'>
-          <OrderList />
-        </div>
-      </section>
-    </>
-  );
+				<div className='mt-[4rem]'>
+					<OrderList />
+				</div>
+			</section>
+		</>
+	);
 };
 
 export default Overview;

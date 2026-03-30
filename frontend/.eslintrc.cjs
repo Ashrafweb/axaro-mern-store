@@ -6,11 +6,15 @@ module.exports = {
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
     'plugin:react-hooks/recommended',
-    'plugin:@typescript-eslint/recommended'
+    'plugin:@typescript-eslint/recommended',
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
-  parserOptions: { ecmaVersion: 'latest', sourceType: 'module', ecmaFeatures: { jsx: true } },
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    ecmaFeatures: { jsx: true },
+  },
   settings: { react: { version: 'detect' } },
   plugins: ['react-refresh', '@typescript-eslint'],
   rules: {
@@ -25,4 +29,4 @@ module.exports = {
     // prefer spaces, but allow eslint to autofix mixed spacing where possible
     'no-mixed-spaces-and-tabs': ['error', 'smart-tabs'],
   },
-}
+};

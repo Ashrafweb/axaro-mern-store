@@ -1,14 +1,12 @@
-import Dashboard from "../../components/Dashboard";
+import UserDashboardLayout from "../../components/UserDashboardLayout";
 import Account from "./AccountDetails";
 
 const Profile = () => {
-  return (
-    <div className=''>
-      <Dashboard>
-        <Account />
-      </Dashboard>
-    </div>
-  );
+	return (
+		<UserDashboardLayout>
+			<Account />
+		</UserDashboardLayout>
+	);
 };
 
 export default Profile;

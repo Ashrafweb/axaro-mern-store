@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import Dashboard from "../../components/Dashboard";
+import AdminDashboardLayout from "../../components/AdminDashboardLayout";
 import Account from "../User/AccountDetails";
 import Order from "../Orders/Order";
 import Favorites from "../Products/Favorites";
@@ -12,44 +12,42 @@ import { useSelector } from "react-redux";
 import ProductList from "./ProductList";
 
 const AdminDashboard = () => {
-  const activeTab = useSelector((state) => state.auth.activeTab);
-  console.log(activeTab);
-  const ChildComponent = () => {
-    console.log(activeTab);
-    switch (activeTab) {
-      case "account":
-        return <Account />;
+	const activeTab = useSelector((state) => state.auth.activeTab);
+	console.log(activeTab);
+	const ChildComponent = () => {
+		console.log(activeTab);
+		switch (activeTab) {
+			case "account":
+				return <Account />;
 
-      case "orders":
-        return <Order />;
+			case "orders":
+				return <Order />;
 
-      case "favourites":
-        return <Favorites />;
+			case "favourites":
+				return <Favorites />;
 
-      case "allOrders":
-        return <OrderList />;
+			case "allOrders":
+				return <OrderList />;
 
-      case "products":
-        return <AllProducts />;
-      case "category":
-        return <CategoryList />;
-      case "dashboard":
-        return <Overview />;
-      case "allUsers":
-        return <UserList />;
-      case "addProduct":
-        return <ProductList />;
-      default:
-        break;
-    }
-  };
-  return (
-    <>
-      <Dashboard>
-        <ChildComponent />
-      </Dashboard>
-    </>
-  );
+			case "products":
+				return <AllProducts />;
+			case "category":
+				return <CategoryList />;
+			case "dashboard":
+				return <Overview />;
+			case "allUsers":
+				return <UserList />;
+			case "addProduct":
+				return <ProductList />;
+			default:
+				break;
+		}
+	};
+	return (
+		<AdminDashboardLayout>
+			<ChildComponent />
+		</AdminDashboardLayout>
+	);
 };
 
 export default AdminDashboard;

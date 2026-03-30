@@ -1,284 +1,259 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import ThemeToggle from "../../components/theme-toggle";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import { Link } from "react-router-dom";
 import { useLogoutMutation } from "../../redux/api/usersApiSlice";
 import { logout } from "../../redux/features/auth/authSlice";
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import {
+	ShoppingCartIcon,
+	Menu,
+	X,
+	User,
+	LogOut,
+	LogIn,
+	Heart,
+	Shield,
+} from "lucide-react";
 import logoUrl from "../../assets/logo_axaro.png";
-import { FaBars } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
-import PropTypes from "prop-types";
-
-const Dropdown = ({ items, trigger }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  const handleClickOutside = (event) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-      setIsOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
-
-  return (
-    <div className='relative inline-block' ref={dropdownRef}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className='cursor-pointer'
-      >
-        {trigger}
-      </button>
-      {isOpen && (
-        <div className='absolute right-0 top-10 w-[150px] bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border shadow-lg rounded-lg z-10 transition-opacity duration-300'>
-          <ul className='list-none text-left'>
-            {items.map((item, index) => (
-              <li
-                key={index}
-                className={`text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface py-2 px-4 font-medium ${
-                  index < items.length - 1
-                    ? "border-b border-light-border dark:border-dark-border"
-                    : ""
-                }`}
-              >
-                {item.link ? (
-                  <Link to={item.link} onClick={item.onClick}>
-                    {item.text}
-                  </Link>
-                ) : (
-                  <button onClick={item.onClick} className='w-full text-left'>
-                    {item.text}
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
-  );
-};
-
-Dropdown.propTypes = {
-  items: PropTypes.arrayOf(
-    PropTypes.shape({
-      text: PropTypes.string.isRequired,
-      link: PropTypes.string,
-      onClick: PropTypes.func,
-    })
-  ).isRequired,
-  trigger: PropTypes.node.isRequired,
-};
 
 const Navbar = () => {
-  const [isSticky, setIsSticky] = useState(false);
-  const [isOpenMenu, setOpenMenu] = useState(false);
-  const { userInfo } = useSelector((state) => state.auth);
-  const { cartItems } = useSelector((state) => state.cart);
+	const [isSticky, setIsSticky] = useState(false);
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const { userInfo } = useSelector((state) => state.auth);
+	const { cartItems } = useSelector((state) => state.cart);
+	const location = useLocation();
 
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      window.scrollY > 150 ? setIsSticky(true) : setIsSticky(false);
-    };
+	useEffect(() => {
+		const handleScroll = () => {
+			setIsSticky(window.scrollY > 50);
+		};
 
-    window.addEventListener("scroll", handleScroll);
+		window.addEventListener("scroll", handleScroll);
+		return () => window.removeEventListener("scroll", handleScroll);
+	}, []);
 
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
+	const [logoutApiCall] = useLogoutMutation();
 
-  const [logoutApiCall] = useLogoutMutation();
+	const logOutHandler = async () => {
+		try {
+			await logoutApiCall().unwrap();
+			dispatch(logout());
+			navigate("/login");
+		} catch (error) {
+			console.error(error);
+		}
+	};
 
-  const logOutHandler = async () => {
-    try {
-      await logoutApiCall().unwrap();
-      dispatch(logout());
-      navigate("/login");
-    } catch (error) {
-      console.error(error);
-    }
-  };
+	const navItems = [
+		{ name: "Home", path: "/" },
+		{ name: "Shop", path: "/shop" },
+	];
 
-  const MobileMenu = () => {
-    return (
-      <div
-        className={`${
-          isOpenMenu ? "translate-x-0" : "-translate-x-full"
-        } fixed top-0 left-0 w-full h-screen p-5 bg-white dark:bg-gray-900 transition-transform duration-300 sm:hidden`}
-      >
-        <div className='my-2 flex justify-between items-center'>
-          {!userInfo ? (
-            <div className='mr-2'>
-              <Link to='../login'>
-                <button
-                  onClick={() => setOpenMenu(false)}
-                  className='btn-primary text-sm px-6 py-2 transition-transform transform hover:scale-105'
-                >
-                  Login
-                </button>
-              </Link>
-            </div>
-          ) : (
-            <div className='grid gap-2'>
-              <p className='text-primary hover:text-primary-dark cursor-pointer font-medium'>
-                Hi, {userInfo?.username}
-              </p>
-              <Link
-                onClick={logOutHandler}
-                to='/'
-                className='btn-primary text-center text-sm px-4 py-2'
-              >
-                Logout
-              </Link>
-            </div>
-          )}
-        </div>
-        <ul
-          className='list-none text-center mt-10 space-y-2'
-          onClick={() => setOpenMenu(false)}
-        >
-          <li className='py-3 hover:text-primary font-medium text-lg'>
-            <Link to='/'>Home</Link>
-          </li>
-          <li className='py-3 hover:text-primary font-medium text-lg'>
-            <Link to='/shop'>Shop</Link>
-          </li>
-          <li className='py-3 hover:text-primary font-medium text-lg'>
-            <Link to='/categories'>Category</Link>
-          </li>
-          <li className='py-3 hover:text-primary font-medium text-lg'>
-            <Link to='/profile'>Profile</Link>
-          </li>
-        </ul>
-      </div>
-    );
-  };
+	const isActive = (path) => location.pathname === path;
 
-  return (
-    <div>
-      <nav
-        className={`${
-          isSticky ? "fixed top-0 left-0 w-full z-20 shadow-lg" : ""
-        } bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-600 transition-all duration-300`}
-      >
-        <div className='max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4'>
-          <Link to='/'>
-            <img
-              src={logoUrl}
-              className='w-[100px] h-[20px] sm:h-[30px] object-cover'
-              alt='Axaro Logo'
-            />
-          </Link>
+	return (
+		<>
+			{/* Overlay for mobile menu */}
+			{isMobileMenuOpen && (
+				<div
+					className='fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden'
+					onClick={() => setIsMobileMenuOpen(false)}
+				/>
+			)}
 
-          <div className='flex md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse'>
-            <div className='authMenu relative'>
-              {!userInfo ? (
-                <div className='mr-2'>
-                  <Link to='../login'>
-                    <button className='btn-primary text-sm px-6 py-2 transition-transform transform hover:scale-105'>
-                      Login
-                    </button>
-                  </Link>
-                </div>
-              ) : (
-                <Dropdown
-                  items={[
-                    {
-                      text: "Profile",
-                      link: "/profile",
-                    },
-                    {
-                      text: "Favorites",
-                      link: "/favorite",
-                    },
-                    {
-                      text: "Logout",
-                      link: "/",
-                      onClick: logOutHandler,
-                    },
-                  ]}
-                  trigger={
-                    <p className='hidden sm:block text-primary hover:text-primary-dark cursor-pointer font-medium'>
-                      Hi, {userInfo?.username}
-                    </p>
-                  }
-                />
-              )}
-            </div>
+			<nav
+				className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+					isSticky
+						? "bg-light-card/95 dark:bg-dark-card/95 backdrop-blur-md shadow-lg border-b border-light-border dark:border-dark-border"
+						: "bg-light-bg dark:bg-dark-bg"
+				}`}
+			>
+				<div className='container px-4 sm:px-6 lg:px-8'>
+					<div className='flex items-center justify-between h-16'>
+						{/* Logo */}
+						<div className='flex-shrink-0'>
+							<Link to='/' className='flex items-center'>
+								<img src={logoUrl} className='h-8 w-auto' alt='Axaro Logo' />
+							</Link>
+						</div>
 
-            <div className='mx-2 px-2 sm:px-4 mt-2'>
-              <Link to='/cart' className='flex relative'>
-                <div className='flex items-center'>
-                  <AiOutlineShoppingCart
-                    className='mr-2 text-white'
-                    size={26}
-                  />
-                </div>
+						{/* Desktop Navigation */}
+						<div className='hidden lg:flex items-center space-x-8'>
+							{navItems.map((item) => (
+								<Link
+									key={item.path}
+									to={item.path}
+									className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+										isActive(item.path)
+											? "bg-slate-800 text-dark-text-primary"
+											: "text-light-text-primary dark:text-dark-text-primary hover:text-primary hover:bg-light-surface dark:hover:bg-dark-surface"
+									}`}
+								>
+									{item.name}
+								</Link>
+							))}
+						</div>
 
-                <div className='absolute top-[-10px] right-0'>
-                  {cartItems.length > 0 && (
-                    <span>
-                      <span className='px-1 py-0 text-sm text-white bg-primary rounded-full'>
-                        {cartItems.reduce((a, c) => a + c.qty, 0)}
-                      </span>
-                    </span>
-                  )}
-                </div>
-              </Link>
-            </div>
-            <ThemeToggle />
-            <button
-              className='sm:hidden'
-              onClick={() => setOpenMenu(!isOpenMenu)}
-            >
-              {isOpenMenu ? (
-                <IoClose className='h-8 w-full font-bold text-white' />
-              ) : (
-                <FaBars className='h-8 w-full text-white' />
-              )}
-            </button>
-          </div>
-          <div
-            className='items-center justify-between hidden w-full md:flex md:w-auto md:order-1'
-            id='navbar-sticky'
-          >
-            <ul className='flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700'>
-              <li>
-                <Link
-                  to='/'
-                  className='block py-2 px-3 text-white bg-primary rounded md:bg-transparent md:text-primary md:p-0 md:dark:text-primary transition-transform transform hover:scale-105 font-medium'
-                  aria-current='page'
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to='../shop'
-                  className='block py-2 px-3 text-light-text-primary rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-primary md:p-0 md:dark:hover:text-primary dark:text-dark-text-primary dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700 transition-transform transform hover:scale-105 font-medium'
-                >
-                  Shop
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-      {isOpenMenu && <MobileMenu />}
-    </div>
-  );
+						{/* Right side actions */}
+						<div className='flex items-center space-x-4'>
+							{/* Cart */}
+							<Link
+								to='/cart'
+								className='relative p-2 text-light-text-primary dark:text-dark-text-primary hover:text-primary transition-colors'
+							>
+								<ShoppingCartIcon size={20} />
+								{cartItems.length > 0 && (
+									<span className='absolute -top-1 -right-1 bg-primary text-dark-text-primary text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium'>
+										{cartItems.reduce((a, c) => a + c.qty, 0)}
+									</span>
+								)}
+							</Link>
+
+							{/* Theme Toggle */}
+							<ThemeToggle />
+
+							{/* User Menu */}
+							{userInfo ? (
+								<div className='relative group'>
+									<button className='flex items-center space-x-2 p-2 rounded-md text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors'>
+										<User size={20} />
+										<span className='hidden sm:block text-sm font-medium'>
+											{userInfo.username}
+										</span>
+									</button>
+
+									<div className='absolute right-0 mt-2 w-48 bg-light-card dark:bg-dark-card border border-light-border dark:border-dark-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200'>
+										<div className='py-1'>
+											{userInfo.isAdmin && (
+												<Link
+													to='/admin/dashboard'
+													className='block px-4 py-2 text-sm text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface'
+												>
+													Admin Dashboard
+												</Link>
+											)}
+											<Link
+												to='/profile'
+												className='block px-4 py-2 text-sm text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface'
+											>
+												Profile
+											</Link>
+											<Link
+												to='/favorite'
+												className='block px-4 py-2 text-sm text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface'
+											>
+												Favorites
+											</Link>
+											<hr className='border-light-border dark:border-dark-border my-1' />
+											<button
+												onClick={logOutHandler}
+												className='w-full text-left px-4 py-2 text-sm text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface flex items-center space-x-2'
+											>
+												<LogOut size={16} />
+												<span>Logout</span>
+											</button>
+										</div>
+									</div>
+								</div>
+							) : (
+								<Link
+									to='/login'
+									className='p-2 rounded-md text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors'
+									title='Login'
+								>
+									<LogIn size={20} />
+								</Link>
+							)}
+
+							{/* Mobile menu button */}
+							<button
+								onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+								className='lg:hidden p-2 rounded-md text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors'
+							>
+								{isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+							</button>
+						</div>
+					</div>
+				</div>
+
+				{/* Mobile Navigation */}
+				<div
+					className={`lg:hidden transition-all duration-300 ${
+						isMobileMenuOpen
+							? "max-h-96 opacity-100"
+							: "max-h-0 opacity-0 overflow-hidden"
+					}`}
+				>
+					<div className='px-2 pt-2 pb-3 space-y-1 bg-light-card dark:bg-dark-card border-t border-light-border dark:border-dark-border'>
+						{navItems.map((item) => (
+							<Link
+								key={item.path}
+								to={item.path}
+								onClick={() => setIsMobileMenuOpen(false)}
+								className={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+									isActive(item.path)
+										? "bg-primary text-dark-text-primary"
+										: "text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface"
+								}`}
+							>
+								{item.name}
+							</Link>
+						))}
+
+						{/* Mobile user menu */}
+						{userInfo && (
+							<div className='border-t border-light-border dark:border-dark-border pt-3 mt-3 flex justify-center space-x-4'>
+								{userInfo.isAdmin && (
+									<Link
+										to='/admin/dashboard'
+										onClick={() => setIsMobileMenuOpen(false)}
+										className='p-3 rounded-lg text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors'
+										title='Admin Dashboard'
+									>
+										<Shield size={24} />
+									</Link>
+								)}
+								<Link
+									to='/profile'
+									onClick={() => setIsMobileMenuOpen(false)}
+									className='p-3 rounded-lg text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors'
+									title='Profile'
+								>
+									<User size={24} />
+								</Link>
+								<Link
+									to='/favorite'
+									onClick={() => setIsMobileMenuOpen(false)}
+									className='p-3 rounded-lg text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors'
+									title='Favorites'
+								>
+									<Heart size={24} />
+								</Link>
+								<button
+									onClick={() => {
+										logOutHandler();
+										setIsMobileMenuOpen(false);
+									}}
+									className='p-3 rounded-lg text-light-text-primary dark:text-dark-text-primary hover:bg-light-surface dark:hover:bg-dark-surface transition-colors'
+									title='Logout'
+								>
+									<LogOut size={24} />
+								</button>
+							</div>
+						)}
+					</div>
+				</div>
+			</nav>
+
+			{/* Spacer for fixed navbar */}
+			<div className='h-16' />
+		</>
+	);
 };
 
 export default Navbar;

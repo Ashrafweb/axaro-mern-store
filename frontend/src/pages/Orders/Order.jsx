@@ -1,16 +1,23 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Messsage from "../../components/Message";
 import Loader from "../../components/Loader";
+import StripePaymentForm from "../../components/StripePaymentForm";
 import {
   useDeliverOrderMutation,
   useGetOrderDetailsQuery,
   useGetPaypalClientIdQuery,
   usePayOrderMutation,
 } from "../../redux/api/orderApiSlice";
+import {
+  useGetStripeKeyQuery,
+  useCreateStripeIntentMutation,
+} from "../../redux/api/paymentApiSlice";
 
 const Order = () => {
   const { id: orderId } = useParams();
@@ -27,34 +34,32 @@ const Order = () => {
     useDeliverOrderMutation();
   const { userInfo } = useSelector((state) => state.auth);
 
-  const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
+  // ── PayPal ──────────────────────────────────────────────────────────────────
+  const [{ isPending: paypalPending }, paypalDispatch] =
+    usePayPalScriptReducer();
 
   const {
     data: paypal,
-    isLoading: loadingPaPal,
+    isLoading: loadingPayPal,
     error: errorPayPal,
   } = useGetPaypalClientIdQuery();
 
   useEffect(() => {
-    if (!errorPayPal && !loadingPaPal && paypal.clientId) {
-      const loadingPaPalScript = async () => {
+    if (!errorPayPal && !loadingPayPal && paypal?.clientId) {
+      const loadPayPalScript = async () => {
         paypalDispatch({
           type: "resetOptions",
-          value: {
-            "client-id": paypal.clientId,
-            currency: "USD",
-          },
+          value: { "client-id": paypal.clientId, currency: "USD" },
         });
         paypalDispatch({ type: "setLoadingStatus", value: "pending" });
       };
-
       if (order && !order.isPaid) {
         if (!window.paypal) {
-          loadingPaPalScript();
+          loadPayPalScript();
         }
       }
     }
-  }, [errorPayPal, loadingPaPal, order, paypal, paypalDispatch]);
+  }, [errorPayPal, loadingPayPal, order, paypal, paypalDispatch]);
 
   function onApprove(data, actions) {
     return actions.order.capture().then(async function (details) {
@@ -62,31 +67,73 @@ const Order = () => {
         await payOrder({ orderId, details });
         refetch();
         toast.success("Order is paid");
-      } catch (error) {
-        toast.error(error?.data?.message || error.message);
+      } catch (err) {
+        toast.error(err?.data?.message || err.message);
       }
     });
   }
 
-  function createOrder(data, actions) {
+  function createPayPalOrder(data, actions) {
     return actions.order
-      .create({
-        purchase_units: [{ amount: { value: order.totalPrice } }],
-      })
-      .then((orderID) => {
-        return orderID;
-      });
+      .create({ purchase_units: [{ amount: { value: order.totalPrice } }] })
+      .then((orderID) => orderID);
   }
 
-  function onError(err) {
+  function onPayPalError(err) {
     toast.error(err.message);
   }
 
+  // ── Stripe ──────────────────────────────────────────────────────────────────
+  const { data: stripeConfig } = useGetStripeKeyQuery();
+  const [createStripeIntent] = useCreateStripeIntentMutation();
+
+  const [stripePromise, setStripePromise] = useState(null);
+  const [clientSecret, setClientSecret] = useState(null);
+  const [stripeLoading, setStripeLoading] = useState(false);
+
+  useEffect(() => {
+    if (stripeConfig?.publishableKey) {
+      setStripePromise(loadStripe(stripeConfig.publishableKey));
+    }
+  }, [stripeConfig]);
+
+  useEffect(() => {
+    const initIntent = async () => {
+      if (
+        order &&
+        !order.isPaid &&
+        order.paymentMethod === "Stripe" &&
+        stripePromise &&
+        !clientSecret
+      ) {
+        try {
+          setStripeLoading(true);
+          const { clientSecret: cs } = await createStripeIntent({
+            orderId,
+          }).unwrap();
+          setClientSecret(cs);
+        } catch (err) {
+          toast.error(err?.data?.error || "Failed to load payment form");
+        } finally {
+          setStripeLoading(false);
+        }
+      }
+    };
+    initIntent();
+  }, [order, stripePromise, clientSecret, orderId, createStripeIntent]);
+
+  const handleStripeSuccess = () => {
+    refetch();
+    toast.success("Payment successful! Confirmation email sent.");
+  };
+
+  // ── Deliver ─────────────────────────────────────────────────────────────────
   const deliverHandler = async () => {
     await deliverOrder(orderId);
     refetch();
   };
 
+  // ── Render ──────────────────────────────────────────────────────────────────
   return isLoading ? (
     <Loader />
   ) : error ? (
@@ -191,21 +238,42 @@ const Order = () => {
           <span>$ {order.totalPrice}</span>
         </div>
 
+        {/* ── Payment UI ─────────────────────────────────────────────────────── */}
         {!order.isPaid && (
-          <div>
-            {loadingPay && <Loader />}{" "}
-            {isPending ? (
-              <Loader />
+          <div className="mt-4">
+            {order.paymentMethod === "Stripe" ? (
+              /* Stripe payment form */
+              stripeLoading ? (
+                <Loader />
+              ) : clientSecret && stripePromise ? (
+                <Elements
+                  stripe={stripePromise}
+                  options={{ clientSecret, appearance: { theme: "night" } }}
+                >
+                  <StripePaymentForm
+                    orderId={orderId}
+                    onSuccess={handleStripeSuccess}
+                  />
+                </Elements>
+              ) : !stripeConfig?.publishableKey ? (
+                <Messsage variant="danger">
+                  Stripe is not configured. Please contact support.
+                </Messsage>
+              ) : null
             ) : (
-              <div>
-                <div>
+              /* PayPal payment buttons */
+              <>
+                {loadingPay && <Loader />}
+                {paypalPending ? (
+                  <Loader />
+                ) : (
                   <PayPalButtons
-                    createOrder={createOrder}
+                    createOrder={createPayPalOrder}
                     onApprove={onApprove}
-                    onError={onError}
-                  ></PayPalButtons>
-                </div>
-              </div>
+                    onError={onPayPalError}
+                  />
+                )}
+              </>
             )}
           </div>
         )}

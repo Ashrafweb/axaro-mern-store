@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useProfileMutation } from "../../redux/api/usersApiSlice";
 import { setCredentials } from "../../redux/features/auth/authSlice";
+import SavedPaymentMethods from "../../components/SavedPaymentMethods";
 
 const Account = () => {
 	const [username, setUserName] = useState("");
@@ -113,6 +114,14 @@ const Account = () => {
 							</button>
 						</div>
 					</form>
+
+					{/* ── Saved Payment Methods ───────────────────────────────── */}
+					<div className='mt-10'>
+						<h2 className='text-xl md:text-2xl font-bold mb-4'>
+							Saved Payment Methods
+						</h2>
+						<SavedPaymentMethods />
+					</div>
 				</div>
 			</div>
 		</div>

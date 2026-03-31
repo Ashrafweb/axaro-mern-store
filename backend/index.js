@@ -11,10 +11,16 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
+import { getStripePublishableKey } from "./controllers/paymentController.js";
+import { startWorkers } from "./services/queue/queues.js";
 dotenv.config();
 const port = process.env.PORT || 3000;
 const env = process.env.NODE_ENV || 'development'
 connectDB();
+
+// Start BullMQ workers (email + order)
+startWorkers();
 
 const app = express();
 app.use(
@@ -25,6 +31,8 @@ app.use(
   })
 );
 
+// Stripe webhook must receive raw body – register before express.json()
+app.use("/api/payments/stripe/webhook", express.raw({ type: "application/json" }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,10 +42,13 @@ app.use("/api/category", categoryRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/payments", paymentRoutes);
 
 app.get("/api/config/paypal", (req, res) => {
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID });
 });
+
+app.get("/api/config/stripe", getStripePublishableKey);
 
 const __dirname = path.resolve();
 

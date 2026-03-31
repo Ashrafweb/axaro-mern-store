@@ -95,7 +95,7 @@ const Shipping = () => {
           </div>
           <div>
             <label className="label-text">Select Payment Method</label>
-            <div className="mt-2">
+            <div className="mt-2 space-y-2">
               <label className="inline-flex items-center cursor-pointer">
                 <input
                   type="radio"
@@ -105,8 +105,21 @@ const Shipping = () => {
                   checked={paymentMethod === "PayPal"}
                   onChange={(e) => setPaymentMethod(e.target.value)}
                 />
-                <span className="ml-3 font-medium">PayPal or Credit Card</span>
+                <span className="ml-3 font-medium">PayPal or Credit Card (PayPal)</span>
               </label>
+              <div className="block">
+                <label className="inline-flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    className="form-radio text-secondary h-5 w-5"
+                    name="paymentMethod"
+                    value="Stripe"
+                    checked={paymentMethod === "Stripe"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  />
+                  <span className="ml-3 font-medium">Credit / Debit Card (Stripe)</span>
+                </label>
+              </div>
             </div>
           </div>
 

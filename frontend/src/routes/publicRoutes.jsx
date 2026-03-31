@@ -7,6 +7,8 @@ const Favorites = lazy(() => import("../pages/Products/Favorites"));
 const ProductDetails = lazy(() => import("../pages/Products/ProductDetails"));
 const Cart = lazy(() => import("../pages/Cart"));
 const Shop = lazy(() => import("../pages/Shop"));
+const AboutUs = lazy(() => import("../pages/AboutUs"));
+const TermsAndConditions = lazy(() => import("../pages/TermsAndConditions"));
 
 export const publicRoutes = [
 	{ index: true, element: <Home /> },
@@ -16,4 +18,6 @@ export const publicRoutes = [
 	{ path: "/product/:id", element: <ProductDetails /> },
 	{ path: "/cart", element: <Cart /> },
 	{ path: "/shop", element: <Shop /> },
+	{ path: "/about", element: <AboutUs /> },
+	{ path: "/terms", element: <TermsAndConditions /> },
 ];

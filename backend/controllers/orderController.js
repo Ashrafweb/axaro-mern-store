@@ -1,5 +1,7 @@
 import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
+import Transaction from "../models/transactionModel.js";
+import { enqueueOrderConfirmationEmail } from "../services/queue/queues.js";
 
 // Utility Function
 function calcPrices(orderItems) {
@@ -159,7 +161,10 @@ const findOrderById = async (req, res) => {
 
 const markOrderAsPaid = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.id).populate(
+      "user",
+      "email username"
+    );
 
     if (order) {
       order.isPaid = true;
@@ -168,11 +173,33 @@ const markOrderAsPaid = async (req, res) => {
         id: req.body.id,
         status: req.body.status,
         update_time: req.body.update_time,
-        email_address: req.body.payer.email_address,
+        email_address: req.body.payer?.email_address || order.user?.email || "",
       };
 
-      const updateOrder = await order.save();
-      res.status(200).json(updateOrder);
+      const updatedOrder = await order.save();
+
+      // Record PayPal transaction
+      try {
+        await Transaction.create({
+          order: order._id,
+          user: req.user._id,
+          provider: "paypal",
+          providerTransactionId: req.body.id,
+          amount: order.totalPrice,
+          currency: "usd",
+          status: "succeeded",
+          metadata: { paypalOrderId: req.body.id },
+        });
+      } catch {
+        // Non-critical – don't fail the response
+      }
+
+      // Enqueue confirmation email
+      await enqueueOrderConfirmationEmail(
+        updatedOrder.toObject({ virtuals: true })
+      );
+
+      res.status(200).json(updatedOrder);
     } else {
       res.status(404);
       throw new Error("Order not found");
